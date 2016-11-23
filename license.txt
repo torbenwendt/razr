@@ -1,0 +1,51 @@
+
+===============================================================================
+RAZR SOFTWARE PACKAGE FOR MATHWORK'S MATLAB
+===============================================================================
+
+
+SOFTWARE USE LIMITATIONS AND LIMITED LICENSE
+
+
+GENERAL PRODUCT LICENSE.
+
+This RAZR distribution (the "Software") is intended solely for scientific or
+academic or educational, non-commercial use.
+You may not decompile, reverse engineer, or disassemble the Software, except as
+permitted by law and granted by this license.
+Torben Wendt retains all right, title and interest in the Software including
+all intellectual property rights embodied therein and derivatives thereof. 
+The Software, including, without limitation, all code, data structures, images,
+sounds, text, derivative works and all other elements of the Software may not
+be resold, rented, leased, distributed (electronically or otherwise) for any
+commercial purpose, or used for any commercial purpose.
+Any permissions granted herein are provided on a temporary basis and can be
+withdrawn by Torben Wendt at any time. All rights not expressly granted are
+reserved.
+
+Unless otherwise stated, the RAZR distribution, including all files is licensed 
+under Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
+(CC BY-NC-ND 4.0). 
+In short, this means that you are free to use and share (copy, distribute and
+transmit) the RAZR distribution under the following conditions:
+
+Attribution - You must attribute the RAZR distribution by acknowledgement of
+              the author if it appears or if was used in any form in your work.
+              The attribution must not in any way that suggests that the author
+              endorse you or your use of the work.
+
+Noncommercial - You may not use RAZR for commercial purposes.
+ 
+No Derivative Works - You may not alter, transform, or build upon RAZR.
+
+For exceptions see the section "License and permissions" in README.TXT.
+
+
+ACCEPTANCE OF LICENSE TERMS.
+
+By acquiring and retaining this Software, you assent to the terms and
+restrictions of this limited license. If you do not accept the terms of this
+limited license, you must delete the Software and all copies of it together
+with all packaging, manuals and other material contained therein.
+
+RAZR Copyright (c) 2014-2016 Torben Wendt. All rights reserved.

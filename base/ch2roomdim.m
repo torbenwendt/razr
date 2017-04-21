@@ -11,15 +11,17 @@ function chmap = ch2roomdim(M)
 %   chmap   Vector of length M containing room dimension for FDN channels (= indices of chmap).
 %           Room dimensions are represented by numbers as follows:
 %           [-z, .y, -x, +x, +y, +z] <=> [-3, -2, -1, +1, +2, +3]
+%
+% See also: NORMDIR2IDX, MAP_ROOMDIM_IDX_2_CH
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the

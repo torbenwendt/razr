@@ -16,11 +16,11 @@ function [b, a] = oct_filterbank(f0, fs, includeEdges, do_plot)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -31,7 +31,6 @@ function [b, a] = oct_filterbank(f0, fs, includeEdges, do_plot)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 %% test call
@@ -103,26 +102,13 @@ end
 
 if do_plot
     ilen = fs/10;
-    irsum = zeros(ilen, 1);
     
-    cmap = lines(num_f0 + 2*includeEdges);
-    
-    figure
-    for n = 1:num_f0 + 2*includeEdges
-        [ans0, ans0, irsig] = plotFrqRsp(b(n, :), a(n, :), fs, ...
-            'color', cmap(n,:), 'linewidth', 1.5, 'mode', 'sgl');
-        hold on;
-        
-        irsum = irsum + irsig;
-    end
+    [h, absspec, irsig] = plot_freqrsp(b, a, 'fs', fs, 'disp_mode', 'sgl', 'irlen', ilen);
+    hold on;
+    sumspec = 20*log10(abs(fft(sum(irsig.sgl, 2))));
+    semilogx(h.ax, linspace(1, fs, ilen), sumspec, '-.', 'color', 'k', 'linewidth', 2);
     
     ylim([-100, 10])
     xlim2 = get(gca, 'xlim');
     xlim([100, xlim2(2)])
-    
-    % sum of all frequency responses:
-    sumspek = fft(irsum);
-    sumspek = 20*log10(abs(sumspek));
-    semilogx(linspace(1, fs, ilen), sumspek, '-.', 'color', [1 1 1]*0.6, 'linewidth', 2);
-    hold off
 end

@@ -9,7 +9,7 @@ function [out, in_respl] = apply_rir(ir, varargin)
 %	ir          RIR structure (see RAZR)
 %
 % Optional Name-Value-pair arguments:
-%	src         Dry test signals or cell array of multiple test signals, specified as ...
+%   src         Dry test signals or cell array of multiple test signals, specified as ...
 %               - Soundfile names (including absolute or relative path if the file is not in the
 %                 Matlab search path). If your Matlab version contains AUDIOREAD, all file formats
 %                 supported by that function are possible, otherwise only wav files are supported.
@@ -46,11 +46,11 @@ function [out, in_respl] = apply_rir(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -61,7 +61,6 @@ function [out, in_respl] = apply_rir(ir, varargin)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 %% input

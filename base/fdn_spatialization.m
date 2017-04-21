@@ -15,11 +15,11 @@ function out = fdn_spatialization(outmat, fdn_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -30,7 +30,6 @@ function out = fdn_spatialization(outmat, fdn_setup, op)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 switch op.spat_mode{end}
@@ -92,7 +91,16 @@ switch op.spat_mode{end}
             out(:, 3) = out(:, 3) + cosd(elev(ch)) * sind(azim(ch)) * outmat(:, ch);
             out(:, 4) = out(:, 4) + sind(elev(ch)) * outmat(:, ch);
         end
+
+    case 'array'        % arbitrary placed speakers
+        distces = sqrt(sum(fdn_setup.hrtf_relpos.^2, 2));
+        source_coordinates = fdn_setup.hrtf_relpos./repmat(distces, 1, 3);
         
+        [speaker_coordinates, speaker_distances] = to_unit_sphere(op.array_pos);
+        
+        panning_matrix = map_to_speakers(source_coordinates, speaker_coordinates, op);
+        out = render_array(outmat, panning_matrix, speaker_distances, op);
+
     otherwise
         error('Spatialization for FDN unknown: %s', op.spat_mode{end});
 end

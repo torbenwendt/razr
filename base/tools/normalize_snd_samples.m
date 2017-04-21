@@ -15,11 +15,11 @@ function snd_norm_rms = normalize_snd_samples(snds, thresh_rms_level, maxval)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -30,7 +30,6 @@ function snd_norm_rms = normalize_snd_samples(snds, thresh_rms_level, maxval)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 numSnds = length(snds);

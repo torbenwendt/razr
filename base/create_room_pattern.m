@@ -1,13 +1,13 @@
-function posRoomsXYZ = createRoomPattern(N, N1)
-% CREATEROOMPATTERN - Get positions of image rooms for a 1x1x1 shoebox room
+function posRoomsXYZ = create_room_pattern(N, N1)
+% CREATE_ROOM_PATTERN - Get positions of image rooms for a 1x1x1 shoebox room
 %
 % Usage:
-%   posRoomsXYZ = CREATEROOMPATTERN(N, [N1])
+%   posRoomsXYZ = CREATE_ROOM_PATTERN(N)
+%   posRoomsXYZ = CREATE_ROOM_PATTERN(Nmin, Nmax)
 %
 % Input:
-%   N               maximum image source order
-%   N1              minimum image source order (optional, default: 0)
-% The input parameters N and N1 are commutative.
+%   N               Maximum image source order (minimum defaults to 0)
+%   N1, N2          Minimum and maximum image source orders
 %
 % Output:
 %   posRoomsXYZ     Matrix containing positions of image rooms
@@ -15,11 +15,11 @@ function posRoomsXYZ = createRoomPattern(N, N1)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -35,53 +35,50 @@ function posRoomsXYZ = createRoomPattern(N, N1)
 %%
 
 if nargin == 1
-    N1 = 0;
+    Nmin = 0;
+    Nmax = N;
+else
+    Nmin = min(N, N1);
+    Nmax = max(N, N1);
 end
 
-if N1 < 0 || N < 0
+if Nmin < 0 || Nmax < 0
     warning('Image source order must be non-negative. An empty matrix is returned.')
     posRoomsXYZ = [];
     return;
 end
 
-% input parameters shall be commutative:
-if N < N1
-    NN = [N, N1];
-    N = NN(2);
-    N1 = NN(1);
-end
-
 % number of image rooms in x-y plane
-numRoomsXY = 1 + 2*(N + N^2);
+numRoomsXY = 1 + 2*(Nmax + Nmax^2);
 posRoomsXY = zeros(numRoomsXY, 3);
 
 
 %% x-y plane
 
 argpointer = 1;
-for n = 1:(N + 1)
+for n = 1:(Nmax + 1)
     spread = (1 - n):(n - 1);
-    posRoomsXY(argpointer:argpointer+2*(n - 1), :) = spreadRoom([(n - N - 1), 0, 0], 2, spread);
+    posRoomsXY(argpointer:argpointer+2*(n - 1), :) = spreadRoom([(n - Nmax - 1), 0, 0], 2, spread);
     argpointer = argpointer + 2*(n - 1) + 1;
 end
-for n = 1:N
-    spread = (n - N):(N - n);
-    posRoomsXY(argpointer:argpointer+2*(N - n), :) = spreadRoom([n, 0, 0], 2, spread);
-    argpointer = argpointer + 2*(N - n) + 1;
+for n = 1:Nmax
+    spread = (n - Nmax):(Nmax - n);
+    posRoomsXY(argpointer:argpointer+2*(Nmax - n), :) = spreadRoom([n, 0, 0], 2, spread);
+    argpointer = argpointer + 2*(Nmax - n) + 1;
 end
 
 %% expand into z direction
 
-numRoomsXYZ = num_img_src([N1, N]);
+numRoomsXYZ = num_img_src([Nmin, Nmax]);
 posRoomsXYZ = zeros(numRoomsXYZ, 3);
 argpointer = 1;
 
 for n = 1:numRoomsXY
     Ncurrent = round(norm(posRoomsXY(n, :), 1));
-    if Ncurrent < N1
-        spread = [(Ncurrent - N):(Ncurrent - N1), (N1 - Ncurrent):(N - Ncurrent)];
+    if Ncurrent < Nmin
+        spread = [(Ncurrent - Nmax):(Ncurrent - Nmin), (Nmin - Ncurrent):(Nmax - Ncurrent)];
     else
-        spread = (Ncurrent - N):(N - Ncurrent);
+        spread = (Ncurrent - Nmax):(Nmax - Ncurrent);
     end
     
     posRoomsXYZ(argpointer:(argpointer + length(spread) - 1), :) = ...

@@ -18,11 +18,11 @@ function ir = fadeout_ir(ir, do_trunc, do_plot)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -33,7 +33,6 @@ function ir = fadeout_ir(ir, do_trunc, do_plot)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 if nargin < 3

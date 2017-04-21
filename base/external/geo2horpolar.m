@@ -7,8 +7,8 @@ function [lat,pol]=geo2horpolar(azi,ele)
 %  azi; azimuth in deg
 %  ele: elevation in deg
 % Output:
-%  lat: lateral angle in deg, [-90°..+90°]
-%  pol: polar angle in deg, [-90°..270°]
+%  lat: lateral angle in deg, [-90ï¿½..+90ï¿½]
+%  pol: polar angle in deg, [-90ï¿½..270ï¿½]
 %
 % Piotr Majdak, 29.09.2006
 % Edit Torben Wendt:

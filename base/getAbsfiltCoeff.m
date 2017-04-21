@@ -16,11 +16,11 @@ function [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -152,11 +152,14 @@ end
 if op.plot_absFilters
     figure
     han = semilogx(room.freq, 20*log10(h), 's', 'linewidth', 2);
+    hold on
+    hf = plot_freqrsp(b, a, 'ax', gca, 'fs', op.fs, 'disp_mode', 'sgl');
+    
     for n = 1:numCh
-        hold on
-        plotFrqRsp(b(n, :), a(n, :), op.fs, 'mode', 'sgl', 'color', get(han(n), 'Color'));
+        hf.plot(n).Color = han(n).Color;
     end
+    
     hold off
-    title(sprintf('FDN absorption filter responses; Synth. method: %s', op.filtCreatMeth));
+    title(sprintf('FDN absorption filters; Synth. method: %s', op.filtCreatMeth));
     %ylim([-10 0])
 end

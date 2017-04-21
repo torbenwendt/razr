@@ -18,17 +18,18 @@ op.ism_only = 5;
 % Limit length of RIR (in sec.):
 op.tlen = 0.3;
 
-% We also might want to get the image sources as separate signals (mono, w/o spatialization):
+% We also might want to get the image sources as separate signals
+% (mono, w/o spatialization):
 op.return_ism_sigmat = true;
 
 % Create BRIR:
 ir = razr(room, op);
 
 % Plot BRIR:
-plot_ir(ir);
+plot_ir(ir, 'r');
 
 % Plot signals, separately for all image sources:
 figure;
-plot(timevec(ir), ir.signal_ISmat);
+plot(timevec(ir), ir.early_refl_sigmat);
 xlabel('Time (s)')
 ylabel('Amplitude')

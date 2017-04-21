@@ -13,11 +13,11 @@ function op = get_options_jaespaper2014
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -45,6 +45,7 @@ op.ism_enableBP = 1;
 
 op.ism_ISposRandFactor = [1 1 1]*0.2;
 op.ism_randFactorsInCart = 0;
+op.ism_rand_start_order = 1;
 
 %% fdn
 

@@ -18,22 +18,24 @@ function h = scene(rooms, varargin)
 %   roomcolors      (one room: [0 0 0]; multiple rooms: lines(length(rooms))) Matrix containing
 %                   rgb values for each room. Each row represents one room.
 %   doorcolors      Same as for roomcolors, but for doors.
+%   reccolor        ([1 0 0]) RGB values for receiver color
+%   srccolor        ([0 0 0]) RGB values for source color
 %   xl_doors        (false) If true, enlarge doors, such that they are on the top level for top view
 %   hide_labels     (false) If true, hide labels for multiple sources and receivers
 %   labeloffset     ([0.1 0.1 0.1]) Offset for source and receiver labels (labels are only plotted
 %                   for multiple sources and receivers)
 %
 % Output:
-%   h                   Strcuture containing graphic handles
+%   h               Strcuture containing graphic handles
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -58,7 +60,6 @@ end
 
 numRooms = length(rooms);
 
-% check for logical errors:
 if numRooms == 1
     adj = {};
     roomcolors_default = zeros(1, 3);
@@ -73,6 +74,8 @@ p = inputParser;
 addparam = get_addparam_func;
 addparam(p, 'roomcolors', roomcolors_default);
 addparam(p, 'doorcolors', roomcolors_default);
+addparam(p, 'reccolor', [1 0 0]);
+addparam(p, 'srccolor', [0 0 0]);
 addparam(p, 'xl_doors', false);
 addparam(p, 'topview', false);
 addparam(p, 'materials', true);
@@ -105,39 +108,22 @@ origins = get_room_origins(rooms, adj);
 plot_reverb_src = false;
 do_cube = true;
 
-figure;
-
+h.fig = figure;
+h.ax = gca;
 plot_handles = [];
 leg_str = cell(0);
 
 for r = 1:numRooms;
     % abbvrevs:
-    %room = complement_room(rooms(r));
     room = rooms(r);
-    origin = origins(r,:);
+    origin = origins(r, :);
     b = room.boxsize;
     
-    %check_door(room);
+    %% rooms:
+    h.plot.room(:, r) = plotbox(...
+        h.ax, b, origin, 'linewidth', 3, 'color', p.Results.roomcolors(r, :));
     
-    % keep only unique src/rec:
-    if 0
-        uni_src = unique([room.srcpos, room.srcdir], 'rows');
-        uni_rec = unique([room.recpos, room.recdir], 'rows');
-        if size(uni_src, 1) == 1
-            room.srcpos = uni_src(:, [1 2 3]);
-            room.srcdir = uni_src(:, [4 5]);
-        end
-        if size(uni_rec, 1) == 1
-            room.recpos = uni_rec(:, [1 2 3]);
-            room.recdir = uni_rec(:, [4 5]);
-        end
-    end
-    
-    handles_rooms_tmp = plotbox(...
-        gca, b, origin, 'linewidth', 3, 'color', p.Results.roomcolors(r, :));
-    plot_handles_rooms(r) = handles_rooms_tmp(1);
-    
-    % doors:
+    %% doors:
     if isfield(room, 'door')
         [rows, cols] = find(adj.rooms == r);
         numA = length(rows);
@@ -151,7 +137,7 @@ for r = 1:numRooms;
         [wall_idx_abs, other_idxs] = idx_door_wall(room);
         
         for d = 1:size(room.door, 1)
-            doorbox(wall_idx_abs(d)) = 0;							% thickness of door = 0
+            doorbox(wall_idx_abs(d)) = 0;   % thickness of door
             doorbox(other_idxs(d, :)) = room.door(d, [4, 5]);
             door_origin(wall_idx_abs(d)) = ...
                 b(wall_idx_abs(d)) * (sign(room.door(d, 1)) == 1) - sign(room.door(d, 1))*0.01;
@@ -161,7 +147,7 @@ for r = 1:numRooms;
                 doorbox(3) = room.boxsize(3) + 1;
             end
             % increased linewidth to be visible in top view, too:
-            plotbox(gca, doorbox, door_origin + origin, ...
+            h.plot.door(:, d) = plotbox(h.ax, doorbox, door_origin + origin, ...
                 'linewidth', 5.0, 'color', p.Results.doorcolors(r, :));
             
             % door state (temporally disabled, not important at the moment):
@@ -172,14 +158,22 @@ for r = 1:numRooms;
         end
     end
     
-    % source(s):
+    %% source(s):
     if isfield(room, 'srcpos') && ~isempty(room.srcpos)
         numSrc = size(room.srcpos, 1);
         srcpos = room.srcpos + repmat(origin, numSrc, 1);
+        
+        if size(p.Results.srccolor, 1) == 1
+            srccol = repmat(p.Results.srccolor, numSrc, 1);
+        else
+            srccol = p.Results.srccolor;
+        end
+        
         for n = 1:numSrc
-            spos = plot3(srcpos(n, 1), srcpos(n, 2), srcpos(n, 3), ...
-                '*', 'color', 'k', 'Linewidth', 2, 'markersize', 8, 'markerfacecolor', 'w');
-            plot_handles = [plot_handles, spos];
+            h.plot.src(n) = plot3(srcpos(n, 1), srcpos(n, 2), srcpos(n, 3), ...
+                '*', 'color', srccol(n, :), 'Linewidth', 2, ...
+                'markersize', 8, 'markerfacecolor', 'w');
+            plot_handles = [plot_handles; h.plot.src(n)];
             leg_str = [leg_str, sprintf('Source %d', n)];
             
             % label:
@@ -188,28 +182,45 @@ for r = 1:numRooms;
                     srcpos(n, 1) + labeloffset(1), ...
                     srcpos(n, 2) + labeloffset(2), ...
                     srcpos(n, 3) + labeloffset(3), ...
-                    sprintf('Src %d', n));
+                    sprintf('Src %d', n), 'color', srccol(n, :));
             end
         end
         hold on
+    else
+        room.srcpos = [];
     end
     
-    % receiver(s):
+    %% receiver(s):
     if isfield(room, 'recpos') && ~isempty(room.recpos)
         numRec = size(room.recpos, 1);
+        
+        if size(p.Results.reccolor, 1) == 1
+            reccol = repmat(p.Results.reccolor, numRec, 1);
+        else
+            reccol = p.Results.reccolor;
+        end
+        
         for n = 1:numRec
             recpos = room.recpos(n, :) + origin;
-            rpos = plot3(recpos(1), recpos(2), recpos(3), 'ro', 'Linewidth', 2, 'markersize', 8);
-            plot_handles = [plot_handles, rpos];
-            set(rpos,'markerfacecolor','r')
+            h.plot.rec(n) = plot3(recpos(1), recpos(2), recpos(3), 'o', ...
+                'Linewidth', 2, 'markersize', 8, ...
+                'color', reccol(n, :), 'markerfacecolor', reccol(n, :));
+            %set(h.plot.rec(n), 'markerfacecolor', 'r');
+            plot_handles = [plot_handles; h.plot.rec(n)];
             leg_str = [leg_str, sprintf('Receiver %d', n)];
             
             hold on
             
             % nose, indicating orientation:
-            [rx, ry, rz] = sph2cart(dg2rd(room.recdir(n, 1)), dg2rd(room.recdir(n, 2)), mean(b)/15);
-            nose = [recpos; recpos + [rx, ry, rz]];
-            plot3(nose(:, 1), nose(:, 2), nose(:, 3), 'r-', 'Linewidth', 3);
+            if isfield(room, 'recdir') && ~isempty(room.recdir)
+                if size(room.recdir, 1) ~= numRec
+                    error('Number of recdir must match number of recpos.');
+                end
+                [rx, ry, rz] = sph2cart(dg2rd(room.recdir(n, 1)), dg2rd(room.recdir(n, 2)), mean(b)/15);
+                nose = [recpos; recpos + [rx, ry, rz]];
+                h.plot.nose(n) = plot3(nose(:, 1), nose(:, 2), nose(:, 3), ...
+                    '-', 'Linewidth', 3, 'color', reccol(n, :));
+            end
             
             % label:
             if numRec > 1 && ~p.Results.hide_labels
@@ -217,32 +228,34 @@ for r = 1:numRooms;
                     recpos(1) + labeloffset(1), ...
                     recpos(2) + labeloffset(2), ...
                     recpos(3) + labeloffset(3), ...
-                    sprintf('Rec %d', n), 'color', 'r');
+                    sprintf('Rec %d', n), 'color', reccol(n, :));
             end
         end
+    else
+        room.recpos = [];
     end
     
-    % materials:
+    %% materials:
     if isfield(room, 'materials') && iscellstr(room.materials) && p.Results.materials
-        mpos = zeros(6,3);						% text positions
-        mpos(1,:) = [1 1 0].*b * 1/2;			% -z
-        mpos(2,:) = [1 0 1].*b * 1/2;			% -y
-        mpos(3,:) = [0 1 1].*b * 1/2;			% -x
-        mpos(4,:) = mpos(3,:) + [1 0 0].*b;		% +x
-        mpos(5,:) = mpos(2,:) + [0 1 0].*b;		% +y
-        mpos(6,:) = mpos(1,:) + [0 0 1].*b;		% +z
+        mpos = zeros(6,3);                      % text positions
+        mpos(1,:) = [1 1 0].*b * 1/2;           % -z
+        mpos(2,:) = [1 0 1].*b * 1/2;           % -y
+        mpos(3,:) = [0 1 1].*b * 1/2;           % -x
+        mpos(4,:) = mpos(3,:) + [1 0 0].*b;     % +x
+        mpos(5,:) = mpos(2,:) + [0 1 0].*b;     % +y
+        mpos(6,:) = mpos(1,:) + [0 0 1].*b;     % +z
         mpos = mpos + repmat(origin, 6, 1);
         
-        htext = text(mpos(:, 1), mpos(:, 2), mpos(:, 3), room.materials, ...
+        h.text = text(mpos(:, 1), mpos(:, 2), mpos(:, 3), room.materials, ...
             'HorizontalAlignment', 'center', 'Interpreter', 'none');
     end
     
-    % reverb sources:
+    %% reverb sources:
     if plot_reverb_src
         [ans0, pos] = get_hrtf_angles(room, do_cube);
         
         if do_cube
-            plotbox(gca, [1 1 1], room.recpos - [1 1 1]*0.5, 'color', [1 1 1]*0.6);
+            plotbox(h.ax, [1 1 1], room.recpos - [1 1 1]*0.5, 'color', [1 1 1]*0.6);
         end
         
         plot3(pos(:, 1), pos(:, 2), pos(:, 3), 'x', 'color', [1 1 1]*0.6);
@@ -273,22 +286,14 @@ if p.Results.topview
 else
     view(-30, 20);
 end
-set(gca, 'DataAspectRatio', [1 1 1]);
+set(h.ax, 'DataAspectRatio', [1 1 1]);
 
-plot_handles = [plot_handles, plot_handles_rooms];
+plot_handles = [plot_handles; h.plot.room(1, :)'];
 leg_str      = [leg_str, {rooms.name}];
 
-hleg = legend(plot_handles, leg_str, 'Location', 'NorthEastOutside', 'Interpreter', 'none');
+h.leg = legend(plot_handles, leg_str, 'Location', 'NorthEastOutside', 'Interpreter', 'none');
 legend('boxoff')
 
-%% argout
-
-if nargout > 0
-    h.fig = gcf;
-    h.ax = gca;
-    h.plot = plot_handles;
-    h.leg = hleg;
-    if exist('htext', 'var')
-        h.text = htext;
-    end
+if nargout == 0
+    clear h
 end

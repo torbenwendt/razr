@@ -4,14 +4,14 @@ RAZR SOFTWARE PACKAGE FOR MATHWORK'S MATLAB
 
 RAZR - Room acoustics simulator
 
-Version 0.90
+Version 0.91
 
-Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 Universitaet Oldenburg.
 All rights reserved. 
 
 Author: Torben Wendt
-e-mail: torben.wendt@uni-oldenburg.de
+e-mail: torben.wendt(at)uni-oldenburg.de
 
 
 ===============================================================================
@@ -32,7 +32,7 @@ the subsection "Getting started/Data structures", below in this file.
 What's in the distribution?
 ===============================================================================
 
-This distribution adds an toolbox for synthesizing and analyzing binaural
+This distribution adds a toolbox for synthesizing and analyzing binaural
 room impulse responses (BRIRs) to your Matlab installation. Example simulations
 are included.
 
@@ -252,7 +252,7 @@ Goessling, Julian Grosse, Andreas Haeussler, Stefan Klockgether, Steven van de
 Par, Joachim Thiemann.
 
 All files in the directory ./BASE/EXTERNAL and all subdirectories are written
-by other authors. Please see the file headers or license.txt files futher
+by other authors. Please see the file headers or license.txt files further
 informations on licenses. In some cases I did code modifications. For details,
 see the comments in the code. The authors are:
 

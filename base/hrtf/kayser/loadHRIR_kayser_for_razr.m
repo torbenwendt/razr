@@ -7,7 +7,7 @@ function hrir = loadHRIR_kayser_for_razr(environment,varargin)
 % position
 %
 % Anechoic HRIRs:
-%   loadHRIR('Anechoic', distance, elevation angle in °, azimuth angle in °
+%   loadHRIR('Anechoic', distance, elevation angle in ï¿½, azimuth angle in ï¿½
 %                                                              [, HRIRset])
 %
 %   with
@@ -16,7 +16,7 @@ function hrir = loadHRIR_kayser_for_razr(environment,varargin)
 %       azimuth   = {-180 : 5 : 180}
 %
 % Office I HRIRs:
-%   loadHRIR('Office_I', azimuth angle in ° [, HRIRset])
+%   loadHRIR('Office_I', azimuth angle in ï¿½ [, HRIRset])
 %
 %   with
 %       azimuth   = {-90 ; 5 : 90}

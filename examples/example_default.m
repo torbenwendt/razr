@@ -37,3 +37,6 @@ return
 
 %% You can listen to the result by the following command:
 soundsc(out{1}, ir.fs);
+
+%% To listen to the BRIR itself, you can also use the short command:
+soundir(ir);

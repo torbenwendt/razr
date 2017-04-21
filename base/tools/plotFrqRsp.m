@@ -1,5 +1,7 @@
 function [plot_handles, absspec, irsig] = plotFrqRsp(b, a, fs, varargin)
 % PLOTFRQRSP - Plot frequency response(s) of filter(s).
+% Note: This function has been replaced by plot_freqrsp and will be removed in
+% future versions.
 %
 % Usage:
 %   [handle, absspek, irsig] = PLOTFRQRSP(b, a, fs, varargin)
@@ -29,11 +31,11 @@ function [plot_handles, absspec, irsig] = plotFrqRsp(b, a, fs, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -44,7 +46,6 @@ function [plot_handles, absspec, irsig] = plotFrqRsp(b, a, fs, varargin)
 % Creative Commons, 444 Castro Street, Suite 900, Mountain View, California,
 % 94041, USA.
 %------------------------------------------------------------------------------
-
 
 
 %% parse varargin for custom options

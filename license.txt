@@ -48,4 +48,4 @@ restrictions of this limited license. If you do not accept the terms of this
 limited license, you must delete the Software and all copies of it together
 with all packaging, manuals and other material contained therein.
 
-RAZR Copyright (c) 2014-2016 Torben Wendt. All rights reserved.
+RAZR Copyright (c) 2014-2017 Torben Wendt. All rights reserved.

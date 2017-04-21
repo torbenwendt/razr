@@ -9,11 +9,11 @@ function op = get_default_options
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -45,15 +45,26 @@ op.pseudoRand = 1;          % Use fixed seeds for all random generator initialis
 op.seed_shift = 0;          % If op.pseudoRand = true, this number will be added to all rng seeds
 op.rt_estim = 'eyring';     % RT-estimation measure ('eyring' or 'sabine'), see also ESTIMATE_RT
 op.spat_mode = 'shm';       % Spatialization modes for {early, late} BRIR part, possible values:
-                              % 'diotic', 'hrtf', 'ild' (broadband), 'shm' (spherical head model).
+                              % 'diotic', 'hrtf', 'ild' (broadband), 'shm' (spherical head model),
+                              % 'simpleHS' (simple head shadow filter with fixed coefficients),
+                              % 'array' (loudspeaker array, in development, not supported yet).
                               % If only one key string is specified, it will be used for both early
                               % and late RIR part.
+op.array_render = 'nearest';  % Rendering mode for op.spat_mode = 'array', possible values:
+                              % 'nearest' (map sources to nearest speaker in projection onto
+                              % unit sphere). In development, not supported yet.
+op.array_pos = [];          % Coordinates of the speakers relative to the listeners,
+                              % if spat_mode is 'array'. In development, not supported yet.
 op.hrtf_database = '';      % Key string for HRTF database. See BASE/HRTF/APPLY_HRTF.M or README.txt
 op.shm_warpMethod = 1;      % For sperical head model: Prewarp theta to better account for smaller 
                               % changes in attenuation at small theta
                               % warpMethod = 0 --> do not warp
                               % warpMethod = 1 --> exponent transform warp
                               % warpMethod = 2 --> alternative warping
+op.enableSR = 0;            % Use of smearing component
+op.typeSR = 0;              % Type of smearing
+                              % 2: gamma like, cacade of 4 all-passes
+                              % 6: original Schroeder reverberator, cacade of 4 all-passes
 op.hrtf_options = struct;   % Struct containing options being passed to APPLY_HRTF
 op.filtCreatMeth = 'cq';    % Method for reflection/absorption filter synthesis, possible options:
                               % 'cq': composedPEQ, 'sh': shEQ, 'cs': composedShelving, 'yw': yulewalk
@@ -89,13 +100,13 @@ op.ism_refl_gain = 0;           % Gain (in dB), applied on all image sources
 op.ism_ISposRandFactor = 0.2;   % Random factor on IS positions. Scalar or vector [x, y, z] for
                                   % cart. coords, vector [dist, azim, elev] for spherical coords.
 op.ism_randFactorsInCart = 1;   % ism_ISposRandFactors specified in cart. coords? Else: spherical
+op.ism_rand_start_order = 2;    % ISM order at which the random jitter starts.
 op.ism_norand_if_diffr = 1;     % Set op.ism_ISposRandFactor to zero, if diffraction is applied?
 op.ism_discd_directions = [];   % Directions ([-3, -2, -1, +1, +2, +3] <-> [-z -y -x +x +y +z]), for
                                   % which all image sources are discarded. Automatically set, if
                                   % source or receiver lies outside room.
 op.ism_discd_dir_orders = [];   % Orders for which all image sources of specified directions
                                   % (op.ism_discd_directions) are discarded. Empty means: all orders
-op.ism_flip_wall = 0;           % Direction of normal of wall at which image sources will be flipped
 op.ism_hiord_always_valid = 0;  % Treat image sources of order > 1 as being always valid?
 
 %% options for fdn
@@ -120,23 +131,15 @@ op.fdn_delays_choice = 'diag';  % Choice of FDN delays: 'roomdim2014': after Wen
 op.fdn_delay_criterion = 'jot'; % Criterion for sufficient delay mode density; 'jot' or 'smith'.
 op.fdn_door_idx_to_shift_angles = 0; % Idx of door to neighbour room, for which reverb is rendered.
                                   % Set to 0, if no neighbour room exists
-op.fdn_enableDiffrFilt = 0;     % Enable diffraction filter?
 op.fdn_return_mc_output = 0;    % Return the multichannel FDN output? (Field ir.sig_late_mc)
-op.fdn_diffr_mc_output = 1;     % Apply diffraction filtering on multichannel FDN output? (Only
-                                  % enabled, if op.fdn_enableDiffrFilt = 1, coupled rooms only)
 op.fdn_enable_spat_div = 1;     % Coupled rooms only: Map part of neighbour-room reverb to reverb-
                                   % cube of receiver room?
                                   
 %% plots
 
 op.plot_reflFilters = 0;        % Reflection filters (ISM)
-op.plot_airAbsFilters = 0;      % Air absorption (ISM)
 op.plot_diffr_points_ism = 0;   % Diffraction points
-op.plot_diffrFilters_ism = 0;   % Diffraction filters
-op.plot_is_pos = 0;             % Image source positions
 
 op.plot_absFilters = 0;         % Absorption filters (FDN)
 op.plot_filters_fdn_bin = 0;    % Reflection filters (FDN)
 op.plot_shifted_angles = 0;     % Shifted virt. reverb sources (see op.fdn_door_idx_to_shift_angles)
-op.plot_diffr_points_fdn = 0;   % Diffraction points
-op.plot_diffrFilters_fdn = 0;   % Diffraction filters

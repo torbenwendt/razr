@@ -23,6 +23,8 @@ function [rt, freq_out, edc_mean_lr, tvec, handles] = schroeder_rt(ir, varargin)
 %   plot        (false) If true, plot EDC (Schroeder integral) (default: false). The EDC will be
 %               plotted for each frequency band. Curves are shifted for better readability. Fit
 %               intervals are marked with squares, fit curves are plotted with black dashed lines.
+%   plot_rt     (false) If true, plot reverberation time against frequencies
+%   plot_fit    (true) If true, plot linear fit and mark fit-interval edges
 %
 % Output:
 %   rt          Reverberation time in sec for specified frequencies
@@ -37,11 +39,11 @@ function [rt, freq_out, edc_mean_lr, tvec, handles] = schroeder_rt(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the
@@ -65,6 +67,8 @@ addparam(p, 'incl_edges', false);
 addparam(p, 'measure', 't30');
 addparam(p, 'lundeby', false);
 addparam(p, 'plot', false);
+addparam(p, 'plot_rt', false);
+addparam(p, 'plot_fit', true);
 
 parse(p, varargin{:});
 
@@ -158,7 +162,7 @@ for n = 1:numFreq_pE
     rt(n) = 60*sign(diff(yfitrange))/pfit(n, 1);
 end
 
-%% plot
+%% plot EDC
 
 handles = struct;
 
@@ -176,9 +180,11 @@ if p.Results.plot
         shift = -(n-1)*10;
         
         % Fit:
-        handles.plot_fit = plot(tvec, polyval(pfit(n, :), tvec) + shift, ...
-            styleFit, 'color', colFit, 'Linewidth', lwFit);
-        hold on;
+        if p.Results.plot_fit
+            handles.plot_fit = plot(tvec, polyval(pfit(n, :), tvec) + shift, ...
+                styleFit, 'color', colFit, 'Linewidth', lwFit);
+            hold on;
+        end
         
         % point at Tr:
         %handles.plot_point = plot(rt(n), polyval(pfit(n, :), 1e3*rt(n)) + shift, ...
@@ -191,11 +197,14 @@ if p.Results.plot
         % EDC mean(L,R):
         handles.plot_edc(n) = plot(...
             tvec, edc_mean_lr(:, n) + shift, 'color', cmap(n, :), 'Linewidth', lw);
+        hold on;
         
         % fit interval:
-        handles.plot_fitinterval = plot(...
-            tvec(xfitrange(n, :)), edc_mean_lr(xfitrange(n, :), n) + shift, ...                
-            's', 'color', cmap(n, :), 'markerfacecolor', 'w', 'Linewidth', lw);
+        if p.Results.plot_fit
+            handles.plot_fitinterval = plot(...
+                tvec(xfitrange(n, :)), edc_mean_lr(xfitrange(n, :), n) + shift, ...
+                's', 'color', cmap(n, :), 'markerfacecolor', 'w', 'Linewidth', lw);
+        end
     end
     hold off
     
@@ -221,6 +230,30 @@ if p.Results.plot
         %set(legh, 'Location', 'NorthEastOutside');
     end
     
-    set(gca,'Linewidth', lw);
+    set(gca, 'Linewidth', lw);
     handles.ax = gca;
+end
+
+%% plot RT
+
+if p.Results.plot_rt
+    lw = 1.3;
+    handles.fig_rt = figure;
+    handles.plot_rt = semilogx(freq_out, rt, 'o-', 'markerfacecolor', 'w', 'linewidth', 1.3);
+    xlabel('Frequency (Hz)');
+    if ischar(p.Results.measure)
+        title(upper(p.Results.measure));
+    else
+        title(sprintf('EDC fit interval: [%g, %g] dB', yfitrange(1), yfitrange(2)));
+    end
+    ylabel('Reverberation time (s)');
+    set(gca, 'xtick', freq_out, 'xticklabel', freq2str(freq_out));
+    grid on;
+    ylim([floor(min(rt)), ceil(max(rt))]);
+    set(gca, 'Linewidth', lw);
+    handles.ax_rt = gca;
+end
+
+if nargout == 0
+    clear rt
 end

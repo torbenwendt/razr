@@ -12,10 +12,12 @@ clear;
 room = get_room_L;
 
 % Add new source positions:
-room.srcpos = [...
-    1.40, 3.02, 1.36; ...
-    2.40, 3.02, 1.36; ...
-    3.40, 3.02, 1.36];
+room.srcpos = repmat(room.srcpos, 3, 1);
+room.srcpos(:, 1) = room.srcpos(:, 1) + (0:2)';
+
+% Note: The number of srcpos, recpos and recdir must either
+% (1) match, or
+% (2) only one of them must be greater than 1.
 
 % Create a sketch of the room:
 scene(room, 'materials', false);

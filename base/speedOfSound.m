@@ -2,13 +2,13 @@ function c = speedOfSound(in)
 % SPEEDOFSOUND - Linear approximation of sound-propagation speed in air.
 %
 % Usage:
-%	c = SPEEDOFSOUND
-%	c = SPEEDOFSOUND(TCelsius)
-%	c = SPEEDOFSOUND(room)
+%   c = SPEEDOFSOUND
+%   c = SPEEDOFSOUND(TCelsius)
+%   c = SPEEDOFSOUND(room)
 %
 % Input:
-%   (none)      A default air temperature of 20 °C is assumed
-%	TCelsius	Temperature in °C
+%   (none)      A default air temperature of 20 Â°C is assumed
+%   TCelsius    Temperature in Â°C
 %   room        Room structure (see RAZR). If the field TCelsius exists, it will be taken into
 %               account. Otherwise, the default temperature is applied.
 %
@@ -18,11 +18,11 @@ function c = speedOfSound(in)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.91
 %
 % Author(s): Torben Wendt
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 % Universitaet Oldenburg.
 %
 % This work is licensed under the

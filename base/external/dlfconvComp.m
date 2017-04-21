@@ -6,13 +6,13 @@
 % a,b = both column vectors or both row vectors
 
 %------------------------------------------------------------------------------
-% PlugInChain for Mathwork’s MATLAB
+% PlugInChain for Mathworkï¿½s MATLAB
 % Version 1.00.0
 %
 % Author(s): Medi
 %
-% Copyright © 2008-2011, Medizinische Physik, 
-% Carl-von-Ossietzky Universität Oldenburg. 
+% Copyright ï¿½ 2008-2011, Medizinische Physik, 
+% Carl-von-Ossietzky Universitï¿½ Oldenburg. 
 % Some rights reserved.
 %
 % This work is licensed under the Creative Commons Attribution-NonCommercial-

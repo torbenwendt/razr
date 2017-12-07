@@ -20,7 +20,7 @@ function [rt, freq_out, edc_mean_lr, tvec, handles] = schroeder_rt(ir, varargin)
 %               [upperLevel, lowerLevel]: a custom fit-interval
 %   lundeby     (false) If true, apply noise truncation using the Lundeby method (see
 %               LUNDEBY_CROSSPOINT)
-%   plot        (false) If true, plot EDC (Schroeder integral) (default: false). The EDC will be
+%   plot        (nargout == 0) If true, plot EDC (Schroeder integral). The EDC will be
 %               plotted for each frequency band. Curves are shifted for better readability. Fit
 %               intervals are marked with squares, fit curves are plotted with black dashed lines.
 %   plot_rt     (false) If true, plot reverberation time against frequencies
@@ -39,12 +39,12 @@ function [rt, freq_out, edc_mean_lr, tvec, handles] = schroeder_rt(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -66,7 +66,7 @@ addparam(p, 'freq', freq_default);
 addparam(p, 'incl_edges', false);
 addparam(p, 'measure', 't30');
 addparam(p, 'lundeby', false);
-addparam(p, 'plot', false);
+addparam(p, 'plot', nargout == 0);
 addparam(p, 'plot_rt', false);
 addparam(p, 'plot_fit', true);
 

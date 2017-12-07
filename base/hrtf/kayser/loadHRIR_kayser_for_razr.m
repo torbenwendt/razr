@@ -59,8 +59,9 @@ function hrir = loadHRIR_kayser_for_razr(environment,varargin)
 % Change this path to an absolute path if you need.
 %baseDirectory = './hrir';
 % edit TW 2016-03-23:
+
 razr_cfg = get_razr_cfg;
-baseDirectory = razr_cfg.(sprintf('hrtf_path__kayser'));
+baseDirectory = razr_cfg.hrtf_path__kayser;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 flipData = false;

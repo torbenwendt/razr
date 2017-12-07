@@ -16,12 +16,12 @@ function [out, outmat] = feedback_delay_network(insig, fdn_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -47,14 +47,24 @@ if op.fdn_enable_apc
     insig(rnge, :) = filter(fdn_setup.b_apc, fdn_setup.a_apc, insig(rnge, :));
 end
 
-%% input matrix size
+%% adjust matrix size
 
-numCh = size(insig, 2);
+[len, numCh] = size(insig);
 
 if ~(numCh == 1 || numCh == fdn_setup.numDel)
     error('Input signal must have either 1 column or length(m) columns.');
 elseif numCh == 1
     insig = repmat(insig, 1, fdn_setup.numDel);
+end
+
+if len < fdn_setup.len
+    insig = [insig; zeros(fdn_setup.len - len, fdn_setup.numDel)];
+else
+    insig = insig(1:fdn_setup.len, :);
+end
+
+if isfield(fdn_setup, 'num_pre_zeros')  % set in gen_fdn_input
+    insig = [insig; zeros(fdn_setup.num_pre_zeros, fdn_setup.numDel)];
 end
 
 %%
@@ -94,9 +104,9 @@ if op.fdn_enableReflFilt
     end
 end
 
-%% binauralization
+%% spatialization
 
-out = fdn_spatialization(outmat, fdn_setup, op);
+out = spatialize(outmat, fdn_setup, op);
 
 % security check:
 if any(any(isnan(out)))

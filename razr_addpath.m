@@ -1,6 +1,5 @@
 function razr_addpath(do_add, do_force)
 % RAZR_ADDPATH - Add or remove paths of required RAZR subdirectories.
-% This function also creates a new file (if not existent) ./RAZR_CFG. See that file for details.
 %
 % Usage:
 %   RAZR_ADDPATH([do_add], [do_force])
@@ -14,12 +13,12 @@ function razr_addpath(do_add, do_force)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -66,10 +65,3 @@ end
 pathfcn(razr_path);
 
 already_added = do_add;
-
-% create user cfg file:
-if ~exist('razr_cfg', 'file') && do_add
-    copyfile(...
-        fullfile(get_razr_path, 'base', '.razr_cfg_template.m'), ...
-        fullfile(get_razr_path, 'razr_cfg.m'));
-end

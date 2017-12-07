@@ -18,15 +18,16 @@
 %   signalmat_diffuse  Time signals of diffuse reflections, same format as signalmat
 %   filter_ranges   Restriction of filtering to specified signal intervals in order to save
 %                   computation. Matrix of the form [start_ch1, end_ch1, ...; start_chN, end_chN].
+
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.90
+% Version 0.92
 %
 % Author(s): Torben Wendt, Nico Goessling, Oliver Buttler
 %
-% Copyright (c) 2014-2016, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International

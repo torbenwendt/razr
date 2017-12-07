@@ -9,7 +9,7 @@ function [b, a] = comb(m, g)
 % 
 % Output:
 %	b, a	filter coefficients
-% 
+
 
 % Torben Wendt
 % edited last: 08.01.2015

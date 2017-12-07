@@ -10,12 +10,12 @@ function n = num_img_src(ords)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International

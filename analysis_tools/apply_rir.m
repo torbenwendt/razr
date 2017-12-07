@@ -24,10 +24,17 @@ function [out, in_respl] = apply_rir(ir, varargin)
 %               Specifications of multiple sounds can be mixed, i.e. the cell array can look like,
 %               e.g., {'olsa', rand(44100, 2), 'path/to/soundfile.wav', ...}.
 %               Default: 'olsa1'.
+%   samples     [start, end] samples of audiofile(s) (specified in 'src') to read. If the file is
+%               resampled (in order to match samplerate of ir), the samples apply to the original
+%               samples of the file. Default: [1, Inf] (the whole file is read).
+%               For multiple source signals, i.e. 'src' is a cell array, the same samples will
+%               be used for all files. source_signals specified as matrices will not be limited.
+%   win         [attack, decay], lengths in samples of Hann flanks to be applied on 'src'.
+%               Default: [0, 0].
 %   eq          Headphone type key string. Currently supported: 'hd650' or 'none'. Own equalizations
 %               can be used. For details, see RAZR_CFG_DEFAULT.
 %               Default: Specified in RAZR_CFG_DEFAULT or, potentially overwritten, in RAZR_CFG
-%   normalize   If true, normalize output signals to 0.99 (default: true)
+%   normalize   If true, normalize output signals to 0.99 (default: false)
 %   cconvlen    For circular convolution (using cconv), cconvlen specifies the convolution length in
 %               samples. If not specified or set to zero or empty, no circular convolution will be
 %               performed. If set to -1, cconvlen will be set to each of the lengths of the dry
@@ -46,12 +53,12 @@ function [out, in_respl] = apply_rir(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -75,8 +82,10 @@ check_thresh = @(x) (length(x) == 2 || isempty(x));
 p = inputParser;
 addparam = get_addparam_func;
 addparam(p, 'src', 'olsa1');
+addparam(p, 'samples', [1, Inf]);
+addparam(p, 'win', [0, 0]);
 addparam(p, 'eq', cfg.default_headphone);
-addparam(p, 'normalize', true);
+addparam(p, 'normalize', false);
 addparam(p, 'cconvlen', []);
 addparam(p, 'thresh_rms_params', [], check_thresh);
 
@@ -92,7 +101,7 @@ if ~strcmp(p.Results.eq, 'none')
 end
 
 %%
-
+% convert 'src' to cell:
 if iscell(p.Results.src)
     srcsig = p.Results.src;
 else
@@ -100,7 +109,6 @@ else
 end
 
 numSrc = length(srcsig);
-
 in_respl = cell(numSrc, 1);
 out      = cell(numSrc, 1);
 
@@ -117,12 +125,13 @@ for n = 1:numSrc
     else
         fldname = sprintf('sample__%s', srcsig{n});
         if isfield(cfg, fldname)
-            [in, fs] = audioread_fcn(cfg.(fldname));
+            audiofilename = cfg.(fldname);
         elseif exist(srcsig{n}, 'file')
-            [in, fs] = audioread_fcn(srcsig{n});
+            audiofilename = srcsig{n};
         else
             error('Sound sample ID unknown or file not found: %s', srcsig{n});
         end
+        [in, fs] = audioread_fcn(audiofilename, p.Results.samples);
     end
     
     % stereo2mono:
@@ -135,6 +144,16 @@ for n = 1:numSrc
         in_respl{n} = resample(in, ir.fs, fs);
     else
         in_respl{n} = in;
+    end
+    
+    % flank:
+    if ~isempty(p.Results.win)
+        if length(p.Results.win) == 2
+            in_respl{n} = flank_it(in_respl{n}, ...
+                p.Results.win(1), p.Results.win(2));
+        else
+            error('win must be specified as [attacklen, decaylen]');
+        end
     end
 end
 
@@ -166,4 +185,23 @@ for n = 1:numSrc
     if p.Results.normalize
         out{n} = 0.99*out{n}./(max(max(abs(out{n}))));
     end
+end
+
+end
+
+function signal = flank_it(signal, attacklen, decaylen)
+
+if attacklen > length(signal)
+    error('Attack flank too long for signal.');
+end
+if decaylen > length(signal)
+    error('Decay flank too long for signal.');
+end
+
+attackwin = hannwin(2*attacklen);
+decaywin  = hannwin(2*decaylen);
+signal(1:attacklen) = signal(1:attacklen).*attackwin(1:attacklen);
+signal((end - decaylen + 1):end) = ...
+    signal((end - decaylen + 1):end).*decaywin((decaylen + 1):(2*decaylen));
+
 end

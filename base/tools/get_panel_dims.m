@@ -1,11 +1,12 @@
-function [nrows, ncols, sub] = get_panel_dims(num)
+function [nrows, ncols, sub] = get_panel_dims(num, ncols)
 % GET_PANEL_DIMS - Get number of row and column subplot-panels for a required number of plots.
 %
 % Usage:
-%   [nrows, ncols, sub] = GET_PANEL_DIMS(num)
+%   [nrows, ncols, sub] = GET_PANEL_DIMS(num, [ncols])
 %
 % Input:
 %   num     Required number of plots.
+%   ncols   Desired number of columns. Optional; default: ceil(sqrt(num))
 %
 % Output:
 %   nrows   Number of subplot panels in y direction
@@ -19,12 +20,12 @@ function [nrows, ncols, sub] = get_panel_dims(num)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -36,8 +37,15 @@ function [nrows, ncols, sub] = get_panel_dims(num)
 %------------------------------------------------------------------------------
 
 
-nrows = ceil(sqrt(num));
-ncols = ceil(num./nrows);
+if nargin < 2
+    ncols = floor(sqrt(num));
+end
+
+if ncols > num || ncols < 1
+    error('ncols must be an integer between 1 and num.');
+end
+
+nrows = ceil(num./ncols);
 
 [sub1, sub2] = ind2sub([nrows, ncols], 1:num);
 sub = [sub1', sub2'];

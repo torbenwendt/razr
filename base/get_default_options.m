@@ -4,17 +4,17 @@ function op = get_default_options
 % Usage:
 %   op = GET_DEFAULT_OPTIONS
 %
-% See also: RAZR, EXPL_RIR_OPTIONS
+% See also: RAZR, SOP, EXPL_RIR_OPTIONS
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -36,9 +36,11 @@ function op = get_default_options
 %% general options
 
 op.fs = 44100;              % Sampling rate in Hz
-op.tlen = [];               % RIR length in sec; if empty, the doubled estimated T60 will be taken
-op.tlen_max = 20;           % If op.tlen is larger than this value, the RIR length will
+op.len = [];                % RIR length in samples; if empty, it will be set to the estimated T60,
+                              % (mean over frequencies) multiplied with op.len_rt_factor
+op.len_max = 882e3;         % If op.len is larger than this value, the RIR length will
                               % automatically be reduced to this value (a warning will be displayed)
+op.len_rt_factor = 1.0;     % See description of op.len
 op.SPL_at_0dBFS = 100;      % SPL at 0 dB full scale
 op.SPL_source = 100;        % SPL at 1 m distance to source
 op.pseudoRand = 1;          % Use fixed seeds for all random generator initialisations?
@@ -46,7 +48,6 @@ op.seed_shift = 0;          % If op.pseudoRand = true, this number will be added
 op.rt_estim = 'eyring';     % RT-estimation measure ('eyring' or 'sabine'), see also ESTIMATE_RT
 op.spat_mode = 'shm';       % Spatialization modes for {early, late} BRIR part, possible values:
                               % 'diotic', 'hrtf', 'ild' (broadband), 'shm' (spherical head model),
-                              % 'simpleHS' (simple head shadow filter with fixed coefficients),
                               % 'array' (loudspeaker array, in development, not supported yet).
                               % If only one key string is specified, it will be used for both early
                               % and late RIR part.
@@ -55,14 +56,14 @@ op.array_render = 'nearest';  % Rendering mode for op.spat_mode = 'array', possi
                               % unit sphere). In development, not supported yet.
 op.array_pos = [];          % Coordinates of the speakers relative to the listeners,
                               % if spat_mode is 'array'. In development, not supported yet.
-op.hrtf_database = '';      % Key string for HRTF database. See BASE/HRTF/APPLY_HRTF.M or README.txt
+op.hrtf_database = '';      % Key string for HRTF database. See BASE/HRTF/APPLY_HRTF.M or README
 op.shm_warpMethod = 1;      % For sperical head model: Prewarp theta to better account for smaller 
                               % changes in attenuation at small theta
                               % warpMethod = 0 --> do not warp
                               % warpMethod = 1 --> exponent transform warp
                               % warpMethod = 2 --> alternative warping
-op.enableSR = 0;            % Use of smearing component
-op.typeSR = 0;              % Type of smearing
+op.enableSR = 0;            % Use smearing component? Vector [SRism, SRfdn], controls for ISM, FDN
+op.typeSR = 2;              % Type of smearing
                               % 2: gamma like, cacade of 4 all-passes
                               % 6: original Schroeder reverberator, cacade of 4 all-passes
 op.hrtf_options = struct;   % Struct containing options being passed to APPLY_HRTF
@@ -87,7 +88,7 @@ op.ism_only = -1;               % Use only image source model? If not -1, this n
                                   % also op.ism_order and op.fdn_enabled (to 0). op.verbosity is set
                                   % to 3, if not specified.
 op.ism_enableReflFilt = 1;      % Enable reflection filters?
-op.ism_enable_diffusion = 0;    % Enable diffusion module?
+op.ism_enable_scattering = 0;   % Enable scattering module?
 op.ism_diffu_specu_ratio = 1.0; % Energy ratio of diffuse and specular reflections (1.0...2.0)
 op.ism_enable_timespread = 1;   % Enable time spreading of diffuse reflections?
 op.ism_enableAirAbsFilt = 1;    % Enable air absorption filters? (Set to -1 for excessive mode)
@@ -97,17 +98,17 @@ op.ism_diffr_mc_output = 0;     % Enable diffr. filtering on multichannel ISM ou
                                   % the FDN input) (only enabled, if op.ism_enableDiffrFilt = 1)
 op.ism_enableBP = 1;            % Enable global bandpass?
 op.ism_refl_gain = 0;           % Gain (in dB), applied on all image sources
-op.ism_ISposRandFactor = 0.2;   % Random factor on IS positions. Scalar or vector [x, y, z] for
-                                  % cart. coords, vector [dist, azim, elev] for spherical coords.
-op.ism_randFactorsInCart = 1;   % ism_ISposRandFactors specified in cart. coords? Else: spherical
+op.ism_filtlen = 4410;          % Shorten reflection and other filters to this length to save
+                                  % computation
+op.ism_jitter_type = 'cart';    % ISM jitter in cartesian ('cart') or spherical ('sph') coordinates
+op.ism_jitter_factor = 0.05;    % Random factor on IS positions.
 op.ism_rand_start_order = 2;    % ISM order at which the random jitter starts.
-op.ism_norand_if_diffr = 1;     % Set op.ism_ISposRandFactor to zero, if diffraction is applied?
+op.ism_norand_if_diffr = 1;     % Set op.ism_jitter_factor to zero, if diffraction is applied?
 op.ism_discd_directions = [];   % Directions ([-3, -2, -1, +1, +2, +3] <-> [-z -y -x +x +y +z]), for
                                   % which all image sources are discarded. Automatically set, if
                                   % source or receiver lies outside room.
-op.ism_discd_dir_orders = [];   % Orders for which all image sources of specified directions
-                                  % (op.ism_discd_directions) are discarded. Empty means: all orders
-op.ism_hiord_always_valid = 0;  % Treat image sources of order > 1 as being always valid?
+op.ism_drct_snd_rec_outs = 0;   % If true, render direct sound, if the receiver is outside the room
+                                  % (For coupled rooms, the direct sound must rendered only once)
 
 %% options for fdn
 
@@ -116,7 +117,7 @@ op.fdn_numDelays = 12;          % Number of FDN delays (thus: channels). Up to n
 op.fdn_fmatrix = 'randOrth';    % Feedback matrix: 'eye' (unit matrix), 'house' (Householder),
                                   % 'hadam' (Hadamard), 'randOrth' (random orthogonal), also
                                   % direct input of a square matrix is possible
-op.fdn_enable_apc = 0;          % Enable allpass cascade to smear FDN input?
+op.fdn_enable_apc = 1;          % Enable allpass cascade to smear FDN input?
 op.fdn_enableAbsFilt = 1;       % Enable absorption filters?
 op.fdn_enableReflFilt = 1;      % Enable reflection filters?
 op.fdn_enableBP = 0;            % Enable global bandpass?

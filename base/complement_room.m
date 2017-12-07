@@ -14,12 +14,12 @@ function room = complement_room(room, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -35,16 +35,10 @@ if nargin < 2
     op = get_default_options;
 end
 
-%%
+%% Check for required fields, set defaults for not-required fields
 
 flds_required = {'boxsize', 'srcpos', 'recpos', 'recdir'};
-numCols_required = [3, 3, 3, 2];
-
-if op.ism_enable_diffusion
-    flds_required = [flds_required, {'deltaMax', 'diffu_cutoff'}];
-    numCols_required = [numCols_required, 1, 1];
-end
-
+numCols_required = [3, 3, 3, 2];  % required number of columns for flds_required
 numFlds = length(flds_required);
 
 for n = 1:numFlds
@@ -59,6 +53,25 @@ end
 
 if ~isfield(room, 'TCelsius')
     room.TCelsius = 20;
+end
+
+if op.ism_enable_scattering
+    if ~isfield(room, 'scat_amount')
+        room.scat_amount = ones(1, 6)*0.25;
+    end
+    if ~isfield(room, 'scat_cutoff')
+        room.scat_cutoff = ones(1, 6)*1e3;
+    end
+end
+
+if any(op.enableSR)
+    if ~isfield(room, 'strSize')
+        room.strSize = 0.01;
+    elseif room.strSize < 0 || room.strSize > 1
+        error('room.strSize must be in the range 0...1.');
+    else
+        room.strSize = min(room.strSize, 0.99);
+    end
 end
 
 %% handle multiple sources/receivers
@@ -84,8 +97,6 @@ end
 
 %% absorption coefficients
 
-freq_default = [250, 500, 1e3, 2e3, 4e3];
-
 if isfield(room, 't60')
     if isfield(room, 'materials')
         warning(...
@@ -100,16 +111,15 @@ if isfield(room, 't60')
     end
 end
 
+freq_default = [250, 500, 1e3, 2e3, 4e3];
+
 if ~isfield(room, 'freq') && iscell(room.materials)
     room.freq = freq_default;
 end
     
-room.abscoeff = getAbscoeff(room.materials, room.freq);
+room = add_abscoeff(room);
 
-if any(any(room.abscoeff >= 1))
-    error('Absorption coefficients must be smaller than 1');
-end
-
+%room.reflcoeff = sqrt(1 - room.abscoeff);
 room.absolRefl = sqrt(1 - room.abscoeff);
 
 end

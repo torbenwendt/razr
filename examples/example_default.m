@@ -7,19 +7,23 @@
 %
 % See also: example_*, RAZR
 
+
 clear;
 
 % In RAZR, rooms are defined as structures. They can be defined in functions like GET_ROOM_L or in
-% any other way, e.g. in a .mat file. See also the section "Data structures" in README.txt. For
+% any other way, e.g. in a .mat file. See also the section "Data structures" in the README. For
 % required fields, see razr help.
 room = get_room_L;
 
+% The room can be plotted as follows:
+scene(room);
+
 % RIR synthesis using the RAZR toplevel function. Here, no options are passed to razr. To see how
-% options are used, see razr help or the script example_options.m.
+% options are used, see example_options.m or type "razr help".
 ir = razr(room);
 
 % The first output parameter of razr is the room impulse response (ir), stored as a structure. See
-% also the section "Data structures" in README.txt. For details on returned fields, see razr help.
+% also the section "Data structures" in the README. For details on returned fields, see razr help.
 
 % The first way to analyze "ir" is to plot the time signal:
 plot_ir(ir);

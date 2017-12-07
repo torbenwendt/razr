@@ -2,7 +2,7 @@ function [ir, ism_setup, fdn_setup, ism_data] = create_rir(room, op)
 % CREATE_RIR - Synthesize (binaural) room impulse response for specified room
 %
 % Usage:
-%   [ir, ism_setup, fdn_setup, op] = CREATE_RIR(room, [op])
+%   [ir, ism_setup, fdn_setup, ism_data] = CREATE_RIR(room, [op])
 %
 % Input:
 %   room        Room structure (see help RAZR)
@@ -11,19 +11,20 @@ function [ir, ism_setup, fdn_setup, ism_data] = create_rir(room, op)
 % Output:
 %	ir          IR structure (see help RAZR)
 %   ism_setup   ISM setup (see GET_ISM_SETUP)
-%   ism_setup   FDN setup (see GET_FDN_SETUP)
+%   fdn_setup   FDN setup (see GET_FDN_SETUP)
+%   ism_data    ISM metadata (see IMAGE_SOURCE_MODEL)
 %
 % See also: RAZR, GET_DEFAULT_OPTIONS
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -34,8 +35,6 @@ function [ir, ism_setup, fdn_setup, ism_data] = create_rir(room, op)
 % 94041, USA.
 %------------------------------------------------------------------------------
 
-
-% This file will be released as a p file.
 
 scurr = get_rng_state;
 tic_total = tic;
@@ -52,6 +51,19 @@ end
 op = complement_options(op);
 room = complement_room(room, op);
 room_flds = {'srcpos', 'srcdir', 'recpos', 'recdir'};
+
+if any(strcmp(op.spat_mode, 'hrtf'))
+    op.hrtf_dbase = get_hrtf_dbase(op.hrtf_database, op.hrtf_options);
+else
+    op.hrtf_dbase = struct;
+end
+
+if isfield(op.hrtf_dbase, 'fs') && op.hrtf_dbase.fs ~= op.fs
+    warning(['Specified sampling rate (%g Hz) differs from that of the\n', ...
+        'HRTF database "%s" (%g Hz). It has been adjusted.'], ...
+        op.fs, op.hrtf_dbase.input_string, op.hrtf_dbase.fs);
+    op.fs = op.hrtf_dbase.fs;
+end
 
 for n = size(room.srcpos, 1):-1:1
     room_tmp = room;
@@ -87,6 +99,8 @@ for n = size(room.srcpos, 1):-1:1
         
         [ir_tmp.sig_late, ir_tmp.sig_late_mc] = feedback_delay_network(FDNinputmat, fdn_setup, op);
         
+        ir_tmp = struct_zeropad(ir_tmp, {'sig_early', 'sig_direct', 'sig_late', 'sig'});
+        
         if ~strcmp(op.spat_mode{end}, '1stOrdAmb')
             ir_tmp.sig = ir_tmp.sig + ir_tmp.sig_late;
         else
@@ -110,7 +124,7 @@ for n = size(room.srcpos, 1):-1:1
     end
     
     if op.return_op
-        ir_tmp.op = op;
+        ir_tmp.op = rmfield(op, 'hrtf_dbase');
     end
     
     % restore random number generator:
@@ -142,7 +156,17 @@ ir = rmfield(ir, 'curr_sigmat');
 
 if ~op.return_ism_sigmat
     ir = rmfield(ir, 'early_refl_sigmat');
-    if op.ism_enable_diffusion
-        ir = rmfield(ir, 'early_refl_sigmat_diffuse');
+    ir = rmfield(ir, 'early_refl_sigmat_diffuse');
+end
+
+% rm paths from hrtf database:
+if any(strcmp(op.spat_mode, 'hrtf'))
+    try
+        if op.hrtf_dbase.did_addpath
+            path(op.hrtf_dbase.oldpath);
+        end
+    catch
+        error('Parameter "did_addpath" does not exist. It must be set in %s', ...
+            op.hrtf_dbase.fname_params);
     end
 end

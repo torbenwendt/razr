@@ -1,0 +1,73 @@
+
+Note: "[!]" Indicates a change that
+- changes the default behavior of RAZR or
+- might introduce incompatibilities with earlier versions.
+
+
+revision 0.92 (Dec. 2017)
+
+* [!] Fixed: Image source jitter is attenuated if it would cause an image source
+  being closer to the receiver than the direct sound source.
+* [!] op.ism_ISposRandFactor was replaced by op.ism_jitter_factor. Jittering now
+  depends on ISM order instead of img src distance to receiver.
+  op.ism_randFactorsInCart was renamed to op.ism_jitter_type and takes string
+  values now.
+* apply_rir: New parameters 'samples' and 'win'. See help apply_rir for details.
+* schroeder_rt: plots EDC automatically if nargout == 0.
+* [!] New handling of wall materials. Own databases for absorption coefficients
+  can now be created and used. For syntax see help razr.
+* [!] New handling of configuration. Several cfg files can be stored in parallel
+  now. The function select_razr_cfg picks the desired one. See doc of
+  "razr_cfg_default" and "select_razr_cfg" for details.
+* The SOFA format (sofaconventions.org) for HRTFs is supported now.
+* [!] New syntax for adding unsupported HRTF databases (non-SOFA format). See
+  README for details.
+* New functions: sop, smat. Search tools for option names and absorbing
+  materials, respectively.
+* ISM needs less memory now.
+* [!] RIR length is now specified in samples instead of seconds. Therefore, the
+  options "op.tlen" and "op.tlen_max" were replaced by new options "op.len" and
+  "op.len_max", respectively.
+* [!] The automatically chosen RIR length is now set to the maximum of
+  the estimated T60 over frequencies instead of the doubled maximum. However,
+  this behavior can be controlled using the new option "op.len_rt_factor".
+
+
+revision 0.91 (Apr. 2017)
+
+* New function plot_ispos to plot image source positions
+* The razr output "ism_data" now contains more fields
+* scene:
+    - Plots room even if srcpos/recpos/recdir are not existing
+    - Colors of sources and receivers can now be specified
+    - For multiple sources/receivers, labels have now the same color
+    - Structure of returned handles is more clear now
+* New function plot_freqrsp: Replaces plotFrqRsp
+* Some code cleanup and refactoring.
+* Some minor fixes
+* schroeder_rt:
+    - can plot the reverberation time against frequencies now
+    - new option to plot the linear EDC fit
+* [!] No random jitter on 1st-order img-src positions. New option to explicitly
+  control that threshold order: op.ism_rand_start_order.
+
+
+revision 0.90 (Nov. 2016)
+
+* New options for scene: hide_labels, labeloffset
+* Disabled tone correction filter on direct sound
+* Introduced spherical head model. The according new spat_mode 'shm' is now the
+  default instead of 'ild'
+* razr addpath/rmpath ignores .git folder now
+* razr_cfg is now only created for razr addpath (not rmpath)
+* "razr" is printed in lower case letters for razr short help
+* apply_hrtf: replaced feval by eval for calling scripts (warning in older
+  Matlab versions)
+
+
+revision 0.11 (Oct. 2016)
+
+* Simpler folder structure
+* Changed way of including unsupported HRTF databases (see README.txt)
+* Multiple sound sources and receivers are supported now (see
+  example_multiple_src.m). Updated analysis tools: scene, plot_ir, plot_irspec.

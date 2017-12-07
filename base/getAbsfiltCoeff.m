@@ -16,12 +16,12 @@ function [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -37,13 +37,13 @@ function [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op)
 
 if nargin == 0
     room.boxsize  = [5, 4, 3];
+    room.materials = {...
+        'hall.concrete_block_painted', 'hall.draperies', ...
+        'hall.carpet_on_conc', 'hall.windowglass', ...
+        'hall.concrete_block_painted', 'hall.tile'};
     
-    % materials for walls {-z; -y; -x; x; y; z}:
-    %room.materials = {'block_p';'windowglass';'block_p';'block_p';'block_p';'carp_conc'};
-    %room.materials = {'block_p';'draperies';'block_p';'block_p';'block_p';'carp_conc'};
-    room.materials = {'block_p';'block_p';'block_p';'block_p';'block_p';'block_p'};
-    
-    [room.abscoeff, room.freq] = getAbscoeff(room.materials, octf(250, 4e3));
+    room.freq = octf(250, 4e3);
+    room.abscoeff = material2abscoeff(room.materials, room.freq);
     fdn_setup.delays = [900; 1200; 1400];
     
     fdn_setup.b_bp = 1;
@@ -52,9 +52,9 @@ if nargin == 0
     op.fs = 44100;
     op.filtCreatMeth = 'cq';
     op.plot_absFilters = true;
+    op.rt_estim = 'eyring';
     
     [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op);
-    
     return;
 end
 

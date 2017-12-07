@@ -3,7 +3,7 @@ function room = get_room_RT
 % In contrast to GET_ROOM_L, here a desired reverberation time 
 %
 % Usage:
-%   room = GET_ROOM_L
+%   room = GET_ROOM_RT
 %
 % Output:
 %   room    Room structure (see RAZR)

@@ -19,12 +19,12 @@ function [Aeq, S, room] = eq_abs_surfarea(room, door_idx)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -41,11 +41,7 @@ if nargin < 2
 end
 
 if isfield(room, 'materials')
-    if isfield(room, 'freq')
-        room.abscoeff = getAbscoeff(room.materials, room.freq);
-    else
-        room.abscoeff = getAbscoeff(room.materials);
-    end
+    room = add_abscoeff(room);
 end
 
 k = [1 2; 3 1; 2 3; 3 2; 1 3; 2 1];  % (materials specified as [-z -y -x x y z])

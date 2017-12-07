@@ -17,12 +17,12 @@ function [ir, ism_data] = image_source_model(room, ism_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -52,7 +52,7 @@ if op.return_ism_data
     ism_data.azim = [];
     ism_data.elev = [];
     ism_data.positions = [];
-    ism_data.dis_pos = [];
+    ism_data.relpos = [];
     ism_data.b_diffr = [];
     ism_data.a_diffr = [];
     ism_data.b_air = [];
@@ -77,7 +77,7 @@ for n = 1:size(ism_setup.orders_from_to, 1)
     
     isd = create_is_pattern(...
         [ism_setup.orders_from_to(n, 1), ism_setup.orders_from_to(n, 2)], ...
-        ism_setup.discd_directions, op.ism_discd_dir_orders);
+        ism_setup.discd_directions);
     
     isd = scale_is_pattern(isd, room, op, ism_setup, ism_setup.rng_seeds(n));
     
@@ -108,7 +108,7 @@ for n = 1:size(ism_setup.orders_from_to, 1)
     if op.return_ism_data
         ism_data.idx_auralize = [ism_data.idx_auralize; isd.idx_auralize];
         ism_data.positions    = [ism_data.positions;    isd.positions];
-        ism_data.dis_pos      = [ism_data.dis_pos;      isd.dis_pos];
+        ism_data.relpos       = [ism_data.relpos;       isd.relpos];
         ism_data.delays       = [ism_data.delays;       isd.sor];
         ism_data.azim         = [ism_data.azim;         isd.azim];
         ism_data.elev         = [ism_data.elev;         isd.elev];
@@ -125,7 +125,7 @@ for n = 1:size(ism_setup.orders_from_to, 1)
         ir.early_refl_sigmat = [ir.early_refl_sigmat, ir.curr_sigmat];
     end
     
-    if op.return_ism_sigmat || op.ism_enable_diffusion
+    if op.return_ism_sigmat || op.ism_enable_scattering
         ir.early_refl_sigmat_diffuse = [...
             ir.early_refl_sigmat_diffuse, curr_sigmat_diffuse];
     end

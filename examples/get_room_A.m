@@ -10,7 +10,7 @@ function room = get_room_A
 %   room    Room structure (see RAZR)
 %
 % Reference:
-% [1] Jeub, M., Sch�er, M., Vary, P. (2009): "A Binaural Room Impulse Response Database for the
+% [1] Jeub, M., Schaefer, M., Vary, P. (2009): "A Binaural Room Impulse Response Database for the
 %     Evaluation of Dereverberation Algorithms", Technical report.
 %
 % See also: GET_ROOM_L, GET_ROOM_RT, SCENE

@@ -3,14 +3,13 @@ function [azel, el] = wrap_angles(azel, isdeg)
 % respectively.
 %
 % Usage:
-%   [azimelev] = WRAP_ANGLES(azel, [isdeg])
+%   [azimelev] = WRAP_ANGLES(azel, isdeg)
 % or:
-%   [azim, elev] = WRAP_ANGLES(azel, [isdeg])
+%   [azim, elev] = WRAP_ANGLES(azel, isdeg)
 %
 % Input:
 %   azel        Matrix containing corresponding azimuth and elevation angles in columns
 %   isdeg       Flag, specifying whether az and el are specified in degrees (otherwise rad)
-%               (if not specified, the angles are assumed to be in degrees)
 %
 % Output:
 %   azimelev    Wrapped angles (same format as input matrix)
@@ -20,12 +19,12 @@ function [azel, el] = wrap_angles(azel, isdeg)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -36,10 +35,6 @@ function [azel, el] = wrap_angles(azel, isdeg)
 % 94041, USA.
 %------------------------------------------------------------------------------
 
-
-if nargin < 3
-    isdeg = true;
-end
 
 if ~isdeg
     azel = rd2dg(azel);

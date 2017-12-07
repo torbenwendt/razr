@@ -20,12 +20,12 @@ function [b, a, B, A] = composedShelving(desiredFrqRsp, freq, fs, type, M, linGa
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -40,16 +40,15 @@ function [b, a, B, A] = composedShelving(desiredFrqRsp, freq, fs, type, M, linGa
 %% test call
 
 if nargin == 0
+    materials = {...
+        'hall.concrete_block_painted'; 'hall.windowglass'; ...
+        'hall.draperies'; 'hall.carpet_on_conc'};
     
-    % wall materials {-z; -y; -x; x; y; z}:
-    materials = {'block_p';'windowglass';'block_p';'draperies';'block_p';'carp_conc'};
-    %materials = {'block_p';'draperies';'block_p';'block_p';'block_p';'carp_conc'};
-    %materials = {'block_p';'block_p';'block_p';'block_p';'block_p';'block_p'};
-    
-    [desiredFrqRsp, freq] = getAbscoeff(materials);
+    freq = [250, 500, 1e3, 2e3, 4e3];
+    desiredFrqRsp = material2abscoeff(materials, freq);
     
     w = 4;
-    testdata = desiredFrqRsp(w,:);
+    testdata = desiredFrqRsp(w, :);
     
     %freq     = [125,  250, 500, 1e3, 2e3, 4e3];
     %testdata = [0.07, 0.3, 0.5, 0.7, 0.7, 0.6];

@@ -3,6 +3,7 @@
 %
 % See also: example_*, RAZR
 
+
 %% Please see EXAMPLE_DEFAULT and EXAMPLE_OPTIONS first for a demonstration of the basic concepts
 %% of RAZR.
 %%
@@ -25,9 +26,9 @@ ir = razr(room, op);
 
 %% Analysis
 
-% Plot BRIR time signal, separate colors for direct, early and late part
+% Plot BRIR time signal on dB scale, use separate colors for direct, early and late part
 % (see help plot_ir for more plotting options):
-plot_ir(ir, 'del');
+plot_ir(ir, 'delg');
 
 % Plot BRIR frequency response with 3rd-octave smoothing (see help plot_irspec for more options):
 plot_irspec(ir, 'smo', '3rd');

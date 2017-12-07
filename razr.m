@@ -6,79 +6,94 @@ function varargout = razr(varargin)
 %   [ir, ism_setup, fdn_setup, ism_data] = RAZR(room, op)
 %   [ir, ism_setup, fdn_setup, ism_data] = RAZR(__, Name, Value)
 % or:
-%   RAZR            (displays short help)
-%   RAZR help       (displays complete help)
-%   RAZR about      (displays program infos)
-%   RAZR addpath    (adds the RAZR root directory and all required subfolders to search path)
-%   RAZR rmpath     (removes the RAZR root directory and all added subfolders from search path)
-%   RAZR demo       (starts the RAZR demo; writes a demo wav file to RAZR's root directory)
+%   RAZR            Displays short help
+%   RAZR help       Displays complete help
+%   RAZR about      Displays program infos
+%   RAZR addpath    Adds the RAZR root directory and required folders to search path
+%   RAZR rmpath     Removes the the all added folders from search path
+%   RAZR demo       Starts the RAZR demo; writes a demo wav file to RAZR's root directory
 %
 % Input:
-%   room    Structure specifying a shoebox shaped room containing a sound source and a receiver.
-%           Required fields:
-%           - boxsize       Vector [x, y, z] containig room dimensions in m
-%           - srcpos        Vector [x, y, z] specifying source position
-%           - recpos        Vector [x, y, z] specifying receiver position
-%           - recdir        Vector [azim, elev] specifying receiver orientation in degrees
-%           - materials     Wall surface materials. Can be specified in several ways:
-%                           - Cell array of material key strings. For available materials see
-%                             GETABSCOEFF. Order of wall surfaces: {-z; -y; -x; +x; +y; +z}.
-%                           - Row vector containing wall absorption coefficients for frequencies
-%                             specified in room.freq (see next required field). Same for all walls.
-%                           - Column vector containing frequency independent absorption coefficients
-%                             for each wall. Order of wall surfaces: [-z; -y; -x; +x; +y; +z].
-%                           - Matrix containing frequency-dependent absorption coefficients,
-%                             different for all walls. Frequencies along row, walls along column.
-%                             Order of walls as in previous point.
-%                           - A scalar specifying one absorption coefficient, same for all walls and
-%                             frequencies.
-%                           Internally, the function GETABSCOEFF is used to generate a matrix
-%                           containing absorption coefficients for all frequency bands and all six
-%                           walls.
+%   room    Structure specifying a shoebox shaped room containing a sound source
+%           and a receiver. Required fields are:
+%           - boxsize       Vector [x, y, z], room dimensions in m
+%           - srcpos        Vector [x, y, z], source position in m
+%           - recpos        Vector [x, y, z], receiver position in m
+%           - recdir        Vector [az, el], receiver orientation in degrees
+%           - materials     Wall surface materials. Can be specified in
+%                           different ways:
+%                           - A cell array of 6 material strings. The order of
+%                             wall surfaces is: {-z; -y; -x; +x; +y; +z}.
+%                             Material strings must be in the format
+%                             "dbase.mymaterial", where "dbase" is the name of
+%                             an absorbing-material database that contains ab-
+%                             sorption coefficients stored under "mymaterial".
+%                             An example is given in GET_ROOM_L. Databases are
+%                             stored in files GET_ABSCOEFF_<DBASE>.M. Own data-
+%                             bases can be created in the same format and will
+%                             automatically be recognized. An example database
+%                             is: GET_ABSCOEFF_HALL.
+%                           - A row vector containing absorption coefficients
+%                             matching the frequencies stored in room.freq.
+%                             Same values for all walls.
+%                           - A column vector containing six frequency-indepen-
+%                             dent absorption coefficients for each wall. Order
+%                             of wall surfaces: [-z; -y; -x; +x; +y; +z].
+%                           - A matrix containing frequency-dependent absorption 
+%                             coefficients for six walls. Frequencies along row,
+%                             walls along column. Order of walls: see above.
+%                           - A scalar number specifying one absorption
+%                             coefficient, same for all walls and frequencies.
+%                           Internally, a new field "abscoeff" will be creaated
+%                           being a matrix containing frequency dependent
+%                           absorption coefficients for all room surfaces.
 %           Instead of materials, a desired reverberation time can be specified:
-%           - t60           Frequency dependent (see freq below) desired reverberation time in sec.
-%           Note: If both materials and t60 are fields of a room, materials will be used and t60
-%           ignored.
-%           - freq          Frequency base for materials (or t60) as octave band center frequencies
-%                           in Hz. Optional, if materials is specified as key-string cell array;
-%                           default: [250, 500, 1e3, 2e3, 4e3]
-%           - TCelsius      Room temperature in Celsius (if not specified, a default value will be
-%                           chosen, see COMPLEMENT_ROOM)
+%           - t60           Freq. dependent desired reverberation time in sec.
+%           Note: If both materials and t60 are fields of a room, materials will
+%           be used and t60 will be ignored.
+%           - freq          Frequency base (in Hz) for materials (or t60) as
+%                           octave band center frequencies. Optional, if
+%                           materials are specified as cell array of strings
+%                           (default: [250, 500, 1e3, 2e3, 4e3])
+%           - TCelsius      Room temperature in Celsius (if not specified, a
+%                           default value will be chosen, see COMPLEMENT_ROOM)
 %           Some example rooms are defined in EXAMPLES/GET_ROOM_*.M.
-%   op      Structure specifying options for RIR synthesis (optional, if empty or not specified,
-%           default options are applied. All avilable options are listed in GET_DEFAULT_OPTIONS).
-%           Examples how to use options are given in EXAMPLES/EXAMPLE_OPTIONS.M.
+%   op      Structure specifying options for RIR synthesis (optional, if empty
+%           or not specified, default options are applied. All avilable options
+%           are listed in GET_DEFAULT_OPTIONS). Examples how to use options are
+%           given in EXAMPLES/EXAMPLE_OPTIONS.M.
 %
 % Name-Value-pair arguments:
-%   May be all fieldnames and values of options structure (see GET_DEFAULT_OPTIONS).
+%   May be all fieldnames and values of options structure
+%   (see GET_DEFAULT_OPTIONS).
 %
 % Output:
-%   ir          Room impulse response as strcuture, containing (at least) the following fields (some
-%               additional fields can be created, if corresponding options are set, see
-%               GET_DEFAULT_OPTIONS):
+%   ir          Room impulse response as strcuture, containing (at least) the
+%               following fields:
 %               - sig           Time signal of impulse response
 %               - fs            Sampling rate in Hz
-%               - start_spl     Time sample at which the direct sound appears in the signal
+%               - start_spl     Time sample at which the direct sound appears
 %               - name          Name of impulse response (same as op.rirname)
-%   ism_setup   Structure containing ISM setup (mostly filter coefficients) created by GET_ISM_SETUP
-%   fdn_setup   Structure containing FDN setup (mostly filter coefficients) created by GET_FDN_SETUP
+%               Additional fields may be created, depnding on specified options.
+%   ism_setup   Structure containing ISM setup created by GET_ISM_SETUP
+%   fdn_setup   Structure containing FDN setup created by GET_FDN_SETUP
 %   ism_data    Structure containing geometric data for image sources
 %
 % Note:
-%   For most usages, RAZR's root directory and all subfolders will be temporally added to your
-%   Matlab search path.
+%   For most usages, RAZR's root directory and all subfolders will be temporally
+%   added to your Matlab search path. You can remove them using >> razr rmpath
 %
-% See also: GET_DEFAULT_OPTIONS, SCENE, example_*
+% See also: SCENE, GET_DEFAULT_OPTIONS, SOP, example_*
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.91
+% Version 0.92
 %
 % Author(s): Torben Wendt
 %
 % Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
-% Universitaet Oldenburg.
+% University Oldenburg, Germany.
 %
 % This work is licensed under the
 % Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International
@@ -100,6 +115,7 @@ if nargin == 0
     
 elseif isstruct(varargin{1})
     razr_addpath(true);
+    create_user_cfg;
     
     % razr(room, ...)
     room = varargin{1};
@@ -138,17 +154,19 @@ else
             help razr.m
         case 'addpath'
             razr_addpath(true);
+            create_user_cfg;
         case 'rmpath'
             razr_addpath(false);
         case 'about'
             % prints first section of README:
-            fname = fullfile(get_razr_path, 'README.txt');
+            fname = fullfile(get_razr_path, 'README');
             pattern = 'oldenburg.de';  % assume that email address is the last line to be printed
             readmetext = fileread(fname);
             idx_pattern = strfind(readmetext, pattern);
             disp(readmetext(1:(idx_pattern + length(pattern))));
         case 'demo'
             razr_addpath(true);
+            create_user_cfg;
             razr_demo;
         otherwise
             error('Argument unknown: %s. Type "razr help" to see all options.', varargin{1});

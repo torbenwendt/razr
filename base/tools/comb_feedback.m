@@ -9,7 +9,7 @@ function [b, a] = comb_feedback(m, g)
 % 
 % Output:
 %	b, a	filter coefficients
-% 
+
 
 % Torben Wendt
 % 2015-06-10

@@ -20,7 +20,7 @@ function [nrows, ncols, sub] = get_panel_dims(num, ncols)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

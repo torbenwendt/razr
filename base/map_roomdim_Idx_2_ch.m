@@ -15,7 +15,7 @@ function ch_idx = map_roomdim_Idx_2_ch(M)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

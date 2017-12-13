@@ -29,7 +29,7 @@ function isd = scale_is_pattern(isd, room, op, ism_setup, rng_seed)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -199,15 +199,15 @@ if any(is_closer)
         % "p-q equation" as a result from calc on paper:
         jittergain = [-1, 1] * sqrt((JR/J2)^2 - (ImR2 - DmR2)/J2) - JR/J2;
         jittergain = min(jittergain);
-        assert(jittergain > 0 && jittergain < 1);
+        %assert(jittergain > 0 && jittergain < 1);
         
         % un-comment for debugging:
         %jittered_before = srcpos(idx, :);
         srcpos(idx, :) = srcpos_orig(idx, :) + jittergain*jittervec;
         %jittered_after = srcpos(idx, :);
         
-        % plot for debugging:
-        if 0
+        %% plot for debugging:
+        if 1
             scene(room, 'topview', 1);
             hold on
             plot3(srcpos_orig(idx, 1), srcpos_orig(idx, 2), srcpos_orig(idx, 3), 'd')
@@ -217,6 +217,7 @@ if any(is_closer)
                 [srcpos_orig(idx, 2), jittered_before(2)], ...
                 [srcpos_orig(idx, 3), jittered_before(3)], '-')
             plot3(jittered_after(1), jittered_after(2), jittered_after(3), '+')
+            keyboard
         end
     end
 end

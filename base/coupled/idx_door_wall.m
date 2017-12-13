@@ -23,7 +23,7 @@ function [idx_wall, idx_rest] = idx_door_wall(room)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -43,10 +43,10 @@ function [idx_wall, idx_rest] = idx_door_wall(room)
 % Torben Wendt
 % last modified: 2015-02-09 (extension to a vector of doors)
 
-numDoors = size(room.door, 1);
+numDoors = length(room.door);
 
 idx_all = 1:3;
-idx_wall = abs(room.door(:, 1));
+idx_wall = abs([room.door.wall]);
 
 idx_rest = zeros(numDoors, 2);
 

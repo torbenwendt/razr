@@ -1,18 +1,9 @@
-function chmap = ch2roomdim(M)
-% CH2ROOMDIM - Mapping of FDN channel numbers to room dimension
+function [strct, idx] = get_by_name(strcts, name)
+% GET_BY_NAME - From a vector of structures, pick that struct that has specified
+% name, stored under a field named "name".
 %
 % Usage:
-%   chmap = CH2ROOMDIM(M)
-%
-% Input:
-%   M       Total number of FDN channels
-%
-% Output:
-%   chmap   Vector of length M containing room dimension for FDN channels (= indices of chmap).
-%           Room dimensions are represented by numbers as follows:
-%           [-z, .y, -x, +x, +y, +z] <=> [-3, -2, -1, +1, +2, +3]
-%
-% See also: NORMDIR2IDX, MAP_ROOMDIM_IDX_2_CH
+%   [strct, idx] = GET_BY_NAME(strcts, name)
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
@@ -34,11 +25,23 @@ function chmap = ch2roomdim(M)
 %------------------------------------------------------------------------------
 
 
-switch M
-    case 12
-        chmap = repmat([-3, -2, -1, 1, 2, 3], 1, 2);
-    case 24
-        chmap = repmat([-3, -2, -1, 1, 2, 3], 1, 4);
+% If required, this function could be extended to use an arbitrary fieldname.
+
+if ~isfield(strcts, 'name')
+    error('Structs must contain a field named "name".');
+end
+
+names = {strcts.name};
+
+iseq = strcmp(names, name);
+
+switch sum(iseq)
+    case 1
+        strct = strcts(iseq);
+        idx = find(iseq);
+        return;
+    case 0
+        error('Vector of structs doesn''t contain a struct named "%s".', name);
     otherwise
-        error('Not implemented.')
+        error('Vector of rooms contains more than one room named "%s".', name);
 end

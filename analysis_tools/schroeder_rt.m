@@ -39,7 +39,7 @@ function [rt, freq_out, edc_mean_lr, tvec, handles] = schroeder_rt(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

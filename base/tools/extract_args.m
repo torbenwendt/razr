@@ -45,7 +45,7 @@ function [out, varargin_cell] = extract_args(argnames, defaults, varargin_cell)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

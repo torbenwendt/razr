@@ -2,7 +2,7 @@ function db = get_abscoeff_legacy
 % GET_ABSCOEFF_LEGACY - This function stores a database of absorption
 % coefficients for several materials. This database is used if the user
 % specifies absorbing materials without a database, e.g., 'brick' instead of
-% 'hall.brick'. See help razr for details on proper usage of materials.
+% 'hall:brick'. See help razr for details on proper usage of materials.
 % Data were mostly taken from the textbook: Hall, D. E. (1987): Basic Acoustics.
 %
 % Usage:

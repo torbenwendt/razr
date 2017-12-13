@@ -25,7 +25,7 @@ function [hrir_angles, p, lrscale, relcoo] = get_hrtf_angles(room, cube, numAng,
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

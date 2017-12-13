@@ -4,7 +4,7 @@ function dbase = get_hrtf_dbase(database, options)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

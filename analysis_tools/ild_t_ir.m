@@ -23,7 +23,7 @@ function [ild_out, t] = ild_t_ir(ir, framelen, ramplen, is_sec)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

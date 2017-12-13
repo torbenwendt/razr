@@ -1,5 +1,5 @@
-function [room_rec, room_ngb, adjacencies, rec_src_same_room] = ...
-    select_rooms(rooms, adjacencies, op)
+function [room_rec, room_ngb, adj, rec_src_same_room] = ...
+    select_rooms(rooms, adj, op)
 % SELECT_ROOMS - Extract those two rooms from a vector of rooms, that build a
 % pair containing the source and receiver. If source and receiver are inside the
 % same room, that adjacent room with highest T60 will be chosen as the second
@@ -26,7 +26,7 @@ function [room_rec, room_ngb, adjacencies, rec_src_same_room] = ...
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -44,7 +44,7 @@ function [room_rec, room_ngb, adjacencies, rec_src_same_room] = ...
 
 
 numRooms = length(rooms);
-numAdj = size(adjacencies, 1);
+numAdj = size(adj, 1);
 idx_rec = [];
 idx_src = [];
 
@@ -73,7 +73,7 @@ if rec_src_same_room
     idx_adj_rooms = zeros(numAdj, 1);
     
     for n = 1:numAdj
-        [ismem, col] = ismember({rooms(idx_rec).name}, adjacencies(n, [1, 3]));
+        [ismem, col] = ismember({rooms(idx_rec).name}, adj(n, [1, 3]));
         if ismem
             switch col
                 % cases 1 and 2 because it was searched in adjacencies(n, [1, 3]):
@@ -85,7 +85,7 @@ if rec_src_same_room
                     error('Room not found on expected position in adjacencies.');
             end
             % get idx of current adjacent room:
-            [ans0, idx_adj_rooms(n)] = ismember(adjacencies(n, idx_adj_room), {rooms.name});
+            [ans0, idx_adj_rooms(n)] = ismember(adj(n, idx_adj_room), {rooms.name});
         end
     end
     
@@ -104,23 +104,21 @@ end
 
 room_ngb = rooms(idx_ngb);
 
-% --- keep only the relevant adjacency ---
-
+% --- keep only the relevant adjacency --- %
 idx_keep = false(numAdj, 1);
 
 for n = 1:numAdj
-    idx_keep(n) = all(ismember({rooms([idx_rec, idx_ngb]).name}, adjacencies(n, [1, 3])));
+    idx_keep(n) = all(ismember({rooms([idx_rec, idx_ngb]).name}, adj(n, [1, 3])));
 end
 
-adjacencies = adjacencies(idx_keep, :);
+adj = adj(idx_keep, :);
 
-if size(adjacencies, 1) > 1
+if size(adj, 1) > 1
     error('Not yet implemented for the case of more than one connecting door.');
 end
 
 % keep only the door of current interest:
-room_rec.door = room_rec.door(adjacencies{find(strcmp(adjacencies, room_rec.name)) + 1}, :);
-room_ngb.door = room_ngb.door(adjacencies{find(strcmp(adjacencies, room_ngb.name)) + 1}, :);
-
-% set all door idxes to 1 (because only one door is left):
-adjacencies([2, 4]) = {1};
+door_name_keep_rec = adj{find(strcmp(adj, room_rec.name)) + 1};
+door_name_keep_ngb = adj{find(strcmp(adj, room_ngb.name)) + 1};
+room_rec.door = get_by_name(room_rec.door, door_name_keep_rec);
+room_ngb.door = get_by_name(room_ngb.door, door_name_keep_ngb);

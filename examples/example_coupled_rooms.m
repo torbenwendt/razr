@@ -4,20 +4,17 @@
 % See also: example_*, RAZR
 
 
-%% Please note: Syntax is preliminary and will be changed in a later version!
-%%
-
 clear;
 
+% Get a vector of rooms and an adjacency specification. See the comments in
+% get_coupled_rooms for details:
 [rooms, adj] = get_coupled_rooms;
 
-scene(rooms, adj, 'materials', 0, 'topview', 1);
+% Plot a sketch of the rooms:
+scene(rooms, adj, 'materials', 0, 'topview', 0);
 
-op.return_rir_parts = 1;
-
-% Synthesize BRIR. create_crir() is used instead of razr().
-% However, razr() will be generalized in a later version to be used for coupled rooms
-ir = create_crir(rooms, adj, op);
+% Synthesize BRIR. See razr help for syntax variants:
+ir = razr(rooms, adj);
 
 plot_ir(ir);
 

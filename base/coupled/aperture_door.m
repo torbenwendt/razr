@@ -18,7 +18,7 @@ function [ap, angles] = aperture_door(room, door_idx, point, do_plot)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -52,14 +52,14 @@ dpos = doorpos(room);
 dpos_cur = squeeze(dpos(door_idx, :, :));
 
 rec_outside = any(room.recpos < 0) || any(room.recpos > room.boxsize);
-effective_door_wall = room.door(door_idx, 1) * sign(~rec_outside - 0.5);
+effective_door_wall = room.door(door_idx).wall * sign(~rec_outside - 0.5);
 
 % get current door normal:
 door_normal = zeros(1, 3);
 door_normal(abs(effective_door_wall)) = sign(effective_door_wall);
 
 % grab rows of pr applicable for current door:
-pr_rows = wall_idx_2_pr(abs(room.door(door_idx, 1)), :);
+pr_rows = wall_idx_2_pr(abs(room.door(door_idx).wall), :);
 
 % vectors from point to door vertices:
 point = point(:);

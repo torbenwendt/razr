@@ -16,7 +16,7 @@ function h = plot_diffr_filters(ism_data, fs)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

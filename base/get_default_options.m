@@ -9,7 +9,7 @@ function op = get_default_options
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -100,7 +100,8 @@ op.ism_enableBP = 1;            % Enable global bandpass?
 op.ism_refl_gain = 0;           % Gain (in dB), applied on all image sources
 op.ism_filtlen = 4410;          % Shorten reflection and other filters to this length to save
                                   % computation
-op.ism_jitter_type = 'cart';    % ISM jitter in cartesian ('cart') or spherical ('sph') coordinates
+op.ism_jitter_type = 'cart';    % ISM jitter in 'cart' or 'sph' coordinates. 'cart_legacy' restores
+                                  % behavior from RAZR 0.91 and before.
 op.ism_jitter_factor = 0.05;    % Random factor on IS positions.
 op.ism_rand_start_order = 2;    % ISM order at which the random jitter starts.
 op.ism_norand_if_diffr = 1;     % Set op.ism_jitter_factor to zero, if diffraction is applied?

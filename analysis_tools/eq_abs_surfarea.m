@@ -19,7 +19,7 @@ function [Aeq, S, room] = eq_abs_surfarea(room, door_idx)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -49,8 +49,8 @@ surfs = prod(room.boxsize(k), 2);
 
 % subtract door surfaces from wall surfaces:
 if isfield(room, 'door') && ~isempty(room.door) && ~isempty(door_idx)
-    idx = normdir2idx(room.door(door_idx, 1));
-    doorsurfs = prod(room.door(door_idx, [4, 5]), 2);
+    idx = normdir2idx(room.door(door_idx).wall);
+    doorsurfs = prod(room.door(door_idx).size, 2);
     surfs(idx) = surfs(idx) - doorsurfs;
 end
 

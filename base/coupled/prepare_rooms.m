@@ -1,10 +1,9 @@
-function [room_rec, room_ngb] = prepare_rooms(...
-    room_rec, room_ngb, origins, rec_src_same_room)
+function [room_rec, room_ngb] = prepare_rooms(room_rec, room_ngb, rec_src_same_room)
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -22,14 +21,14 @@ function [room_rec, room_ngb] = prepare_rooms(...
 
 
 if ~isfield(room_ngb, 'srcpos') || isempty(room_ngb.srcpos)
-    room_ngb.srcpos = room_rec.srcpos + origins(2, :);
+    room_ngb.srcpos = room_rec.srcpos + room_rec.origin;
 end
 
 if ~isfield(room_rec, 'srcpos') || isempty(room_rec.srcpos)
-    room_rec.srcpos = room_ngb.srcpos - origins(2, :);
+    room_rec.srcpos = room_ngb.srcpos - room_rec.origin;
 end
 
-room_ngb.recpos = room_rec.recpos + origins(2, :);
+room_ngb.recpos = room_rec.recpos + room_rec.origin;
 room_ngb.recdir = room_rec.recdir;
 
 room_rec.recpos = pos_cheat(room_rec, room_rec.recpos);

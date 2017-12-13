@@ -8,10 +8,11 @@ function abscoeff = material2abscoeff(materials, desired_freq)
 %
 % Input:
 %   materials       String or cell array of strings of the form
-%                   "dbase_name.material", where "dbase_name" is the name of an
+%                   "dbase_name:material", where "dbase_name" is the name of an
 %                   absorbing-material database that contains absorption
-%                   coefficients stored under the name "material". For details
-%                   and an example, see GET_ROOM_L.M.
+%                   coefficients stored under the name "material". Leading and
+%                   trailing whitespaces are removed. For details and an example
+%                   see GET_ROOM_L.M.
 %   desired_freq    Frequency base (in Hz) for absorption coefficients.
 %                   Frequencies must be available in all chosen databases.
 %
@@ -20,7 +21,7 @@ function abscoeff = material2abscoeff(materials, desired_freq)
 %   get_abscoeff_hall.m:
 % 
 %   >> abscoeffs = material2abscoeff(...
-%           {'hall.brick', 'hall.draperies'}, [250, 500, 1e3, 2e3, 4e3])
+%           {'hall:brick', 'hall:draperies'}, [250, 500, 1e3, 2e3, 4e3])
 %   ans =
 %       0.0300    0.0300    0.0300    0.0400    0.0500    0.0700
 %       0.0700    0.3000    0.5000    0.7000    0.7000    0.6000
@@ -30,7 +31,7 @@ function abscoeff = material2abscoeff(materials, desired_freq)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -51,7 +52,7 @@ if ~iscell(materials)
     materials = {materials};
 end
 
-sep = '.';
+sep = ':';
 [db_names, mats] = ...
     cellfun(@(x) (parse_matkey(x, sep)), materials, 'UniformOutput', false);
 
@@ -64,9 +65,10 @@ end
 function [dbase, material] = parse_matkey(matkey, sep)
 
 parts = strsplit(matkey, sep);
+parts = strtrim(parts);
 
 if length(parts) ~= 2 || any(cellfun(@isempty, parts))
-    % handle legacy format (e.g., 'brick' instead of 'hall.brick'):
+    % handle legacy format (e.g., 'brick' instead of 'hall:brick'):
     if length(parts) == 1
         db = get_abscoeff_legacy;
         if isfield(db.absco, parts{1})
@@ -82,7 +84,7 @@ if length(parts) ~= 2 || any(cellfun(@isempty, parts))
         end
     end
     error(['Absorbing material not well-formatted: %s. ', ...
-        'Must be in the form ''dbase.material''.'], matkey);
+        'Must be in the form ''dbase%smaterial''.'], matkey, sep);
 end
 
 dbase = parts{1};

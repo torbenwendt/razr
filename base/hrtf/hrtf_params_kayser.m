@@ -13,7 +13,7 @@ function dbase = hrtf_params_kayser(dbase, options)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

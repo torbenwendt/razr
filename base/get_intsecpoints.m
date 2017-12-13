@@ -23,7 +23,7 @@ function [intsecpoints, isonrectsurf] = get_intsecpoints(rect_vertices, srcpos, 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -51,7 +51,7 @@ function [intsecpoints, isonrectsurf] = get_intsecpoints(rect_vertices, srcpos, 
 % lambda,
 % mu, rho:  paramters to be calculated
 %
-% If e.g. room.door(1) == -2, the leq writes:
+% If e.g. room.door.wall == -2, the leq writes:
 % a1 + lambda*u1 = b1 + mu
 % a2 + lambda*u2 = b2
 % a3 + lambda*u3 = b3 + rho

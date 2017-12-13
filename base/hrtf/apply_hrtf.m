@@ -18,7 +18,7 @@ function [out_L, out_R] = apply_hrtf(dbase, in, azim, elev, fs, options)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

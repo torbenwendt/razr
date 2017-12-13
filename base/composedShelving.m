@@ -20,7 +20,7 @@ function [b, a, B, A] = composedShelving(desiredFrqRsp, freq, fs, type, M, linGa
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -41,8 +41,8 @@ function [b, a, B, A] = composedShelving(desiredFrqRsp, freq, fs, type, M, linGa
 
 if nargin == 0
     materials = {...
-        'hall.concrete_block_painted'; 'hall.windowglass'; ...
-        'hall.draperies'; 'hall.carpet_on_conc'};
+        'hall:concrete_block_painted'; 'hall:windowglass'; ...
+        'hall:draperies'; 'hall:carpet_on_conc'};
     
     freq = [250, 500, 1e3, 2e3, 4e3];
     desiredFrqRsp = material2abscoeff(materials, freq);

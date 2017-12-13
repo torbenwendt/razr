@@ -20,7 +20,7 @@ function [b, a] = getFiltCoeff_yulewalk(freq, ampl, fs, N, makePlot)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -41,7 +41,7 @@ function [b, a] = getFiltCoeff_yulewalk(freq, ampl, fs, N, makePlot)
 
 if nargin == 0
     N = 16;
-    materials = {'hall.carpet_on_conc'; 'hall.plaster_sprayed'; 'hall.windowglass'};
+    materials = {'hall:carpet_on_conc'; 'hall:plaster_sprayed'; 'hall:windowglass'};
     fs = 44100;
     freq = [250 500 1e3 2e3 4e3];
     abscoeff = material2abscoeff(materials, freq);

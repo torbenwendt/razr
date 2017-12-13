@@ -7,7 +7,7 @@ function [b, a] = get_tc_filtcoeff
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Nico Goessling
 %

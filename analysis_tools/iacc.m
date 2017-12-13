@@ -34,7 +34,7 @@ function [iacc_matrix, freq, ranges] = iacc(ir, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

@@ -26,7 +26,7 @@ function isp = create_is_pattern(orders, discd_directions, discd_dir_ords)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

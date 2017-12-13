@@ -15,7 +15,7 @@ function posRoomsXYZ = create_room_pattern(N, N1)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

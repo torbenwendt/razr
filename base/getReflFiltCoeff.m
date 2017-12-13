@@ -22,7 +22,7 @@ function [bRefl, aRefl] = getReflFiltCoeff(freq, absolRefl, b_bp, a_bp, fs, meth
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

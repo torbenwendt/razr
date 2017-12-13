@@ -18,7 +18,7 @@ function [lashed_angles, factr] = lash_hrtf_angles(hrtf_angles, ap)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

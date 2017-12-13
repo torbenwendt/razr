@@ -15,21 +15,33 @@ room.name = 'Laboratory';
 % Room dimensions [x, y, z] in meters:
 room.boxsize = [4.97, 4.12, 3];
 
-% The sound absorption at the walls are specified in the field "materials".
-% From room.materials, a new field "abscoeff" will be calculated internally,
-% which is a matrix containing frequency dependent absorption coefficients for
-% all room surfaces.
-% room.materials can be specified in several ways. In short, they can be:
-%   - key strings for wall materials, as done here in this file,
-%   - or actual absorption coefficients, as done in GET_ROOM_A.
+% The sound absorption at the walls is specified in the field "materials". From
+% room.materials, a new field "abscoeff" will be set internally, which is a
+% matrix containing frequency dependent absorption coefficients for all room
+% surfaces.
+% room.materials can be specified in several ways. In short, the most important
+% formats are:
+%   - Key strings for wall materials, as done here in this file; Internally, the
+%     function MATERIAL2ABSCOEFF is called.
+%   - A row vector of actual absorption coefficients; frequency dependent, same
+%     same for all walls (see GET_ROOM_A). Frequencies are set in room.freq, sew
+%     below;
+%   - A matrix containing frequency-dependent absorption coefficients for the
+%     six walls. Frequencies along row, walls along column. Order of walls: see
+%     below.
+% For further possibilities, see help razr.
 % If you would like to specify a desired reverberation time instead of absorbing
-% material, you can do this too. See GET_ROOM_RT for details.
+% material, you can do this, too. See GET_ROOM_RT for details.
 % 
 % The order of walls (directions of outside-pointing normal vectors) is:
-% {-z, -y, -x, +x, +y, +z}:
+% {-z, -y, -x, +x, +y, +z}.
+% Here, we use key strings for materials. These are defined in the file
+% GET_ABSCOEFF_HALL.M. Therefore, the prefix "hall:" is added to them. Own
+% material "databases" can be created and used in a similar way. See
+% GET_ABSCOEFF_HALL.M for details.
 room.materials = {...
-    'hall.carpet_on_conc'; 'hall.gypsum'; 'hall.plywood'; ...     % -z, -y, -x
-    'hall.windowglass'; 'hall.plaster_sprayed'; 'hall.concrete'}; % +x, +y, +z
+    'hall:carpet_on_conc'; 'hall:gypsum'; 'hall:plywood'; ...     % -z, -y, -x
+    'hall:windowglass'; 'hall:plaster_sprayed'; 'hall:concrete'}; % +x, +y, +z
 
 % Frequency base (in Hz) for absorption coefficients
 % (must be octave band center frequencies between 250 Hz and 8 kHz):

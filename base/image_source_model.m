@@ -17,7 +17,7 @@ function [ir, ism_data] = image_source_model(room, ism_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

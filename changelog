@@ -1,10 +1,29 @@
 
+--------------------------------------------------------------------------------
 Note: "[!]" Indicates a change that
 - changes the default behavior of RAZR or
 - might introduce incompatibilities with earlier versions.
+--------------------------------------------------------------------------------
 
 
-revision 0.92 (Dec. 2017)
+Revision 0.93 (Dec. 2017)
+(Note also the release notes for version 0.92 since it was no public release.)
+
+* Coupled rooms supported now. For details, see RAZR, EXAMPLE_COUPLED_ROOMS,
+  GET_COUPLED_ROOMS.
+* Improved documentation in several files.
+* [!] Syntax for wall material specification. Now a colon ":" is used as
+  separator, i.e., "dbase:material". The period symbol is not used longer to
+  prevent confusion with "struct.field" syntax. For details, see help razr.
+
+Known issues:
+* Absorption and reflection filters that are created internally might be
+  instable if room.freq contains 125 Hz. Set the options op.plot_absFilters = 1
+  and op.plot_reflFilters = 1 to check the created filters. In doubt, choose
+  frequencies >= 250 Hz.
+
+
+Revision 0.92 (Dec. 2017, no public release)
 
 * [!] Fixed: Image source jitter is attenuated if it would cause an image source
   being closer to the receiver than the direct sound source.
@@ -33,7 +52,7 @@ revision 0.92 (Dec. 2017)
   this behavior can be controlled using the new option "op.len_rt_factor".
 
 
-revision 0.91 (Apr. 2017)
+Revision 0.91 (Apr. 2017)
 
 * New function plot_ispos to plot image source positions
 * The razr output "ism_data" now contains more fields
@@ -52,7 +71,7 @@ revision 0.91 (Apr. 2017)
   control that threshold order: op.ism_rand_start_order.
 
 
-revision 0.90 (Nov. 2016)
+Revision 0.90 (Nov. 2016)
 
 * New options for scene: hide_labels, labeloffset
 * Disabled tone correction filter on direct sound
@@ -65,7 +84,7 @@ revision 0.90 (Nov. 2016)
   Matlab versions)
 
 
-revision 0.11 (Oct. 2016)
+Revision 0.11 (Oct. 2016)
 
 * Simpler folder structure
 * Changed way of including unsupported HRTF databases (see README.txt)

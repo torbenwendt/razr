@@ -9,7 +9,7 @@ function ang_rad = dg2rd(ang_deg)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

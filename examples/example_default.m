@@ -12,7 +12,8 @@ clear;
 
 % In RAZR, rooms are defined as structures. They can be defined in functions like GET_ROOM_L or in
 % any other way, e.g. in a .mat file. See also the section "Data structures" in the README. For
-% required fields, see razr help.
+% required fields, see razr help. Have a look into the code of GET_ROOM_L to see how to define
+% rooms.
 room = get_room_L;
 
 % The room can be plotted as follows:

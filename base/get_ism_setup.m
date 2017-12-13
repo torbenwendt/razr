@@ -15,7 +15,7 @@ function ism_setup = get_ism_setup(room, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -170,11 +170,11 @@ if isout
         error('Receiver or source lies outside room but no door is specified.');
     end
     
-    if size(room.door, 1) ~= 1
+    if length(room.door) ~= 1
         error('room must contain not more than one door.');
     end
     
-    wall_idx_door = room.door(1, 1);  % Just for the moment; more doors are not supported, yet
+    wall_idx_door = room.door.wall(1);  % Just for the moment; more doors are not supported, yet
     discd_direction = wall_idx_door;
     
     % Only 1st order diffraction can be handled -> check the following criterion for all doors:

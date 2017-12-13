@@ -28,7 +28,7 @@ function [b, a, H] = shelvingM(f0, fb, fs, gain, M, type, linGain, do_plot)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %

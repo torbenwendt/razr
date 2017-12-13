@@ -1,14 +1,13 @@
-function por_compen = compen_por_diffr_replacem_src(room, op, isd)
-% COMPEN_POR_DIFFR_REPLACEM_SRC - Get amplitude compensation factors for image sources which would
-% occour for a receiver at that point returned by GET_DIFFR_REPLACEM_POINT.
+function str = boldface(str)
+% BOLDFACE - Format string such that sprintf/fprintf prints it in boldface.
 %
 % Usage:
-%   por_compen = compen_por_diffr_replacem_src(room, op, isd)
+%   bold_str = BOLDFACE(str)
 
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -25,14 +24,4 @@ function por_compen = compen_por_diffr_replacem_src(room, op, isd)
 %------------------------------------------------------------------------------
 
 
-% Torben Wendt
-% 2016-02-02
-
-
-room.recpos = get_diffr_replacem_point(room, 1);
-
-ism_setup.do_diffraction = 0;
-ism_setup.do_val_check = 0;
-isd_replacem = scale_is_pattern(isd.pattern, room, op, ism_setup, 0);
-
-por_compen = (isd_replacem.por./isd.por)';
+str = ['<strong>', str, '</strong>'];

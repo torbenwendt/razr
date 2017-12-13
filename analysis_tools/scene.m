@@ -14,7 +14,7 @@ function h = scene(rooms, varargin)
 % Optional Name-Value-pair arguments (defaults in parentheses):
 %
 % Plotting:
-% –––––––––
+% ---------
 %   topview         (false) Show room sketch from top view
 %   roomcolors      (one room: [0 0 0]; multiple rooms: lines(length(rooms))) Matrix containing
 %                   rgb values for each room. Each row represents one room.
@@ -26,7 +26,7 @@ function h = scene(rooms, varargin)
 %   xl_doors        (false) If true, enlarge doors, such that they are on the top level for top view
 %
 % Labels:
-% –––––––
+% -------
 %   materials       (true) If wall materials are specified as key strings (see RAZR, GETABSCOEFF),
 %                   label them on the respective walls
 %   srclabel        ('') Labels for source(s). Cell array of strings or single string. If empty,
@@ -39,7 +39,7 @@ function h = scene(rooms, varargin)
 %   title           ('') Axes title with interpreter 'none'
 %
 % Image sources:
-% ––––––––––––––
+% --------------
 % (for these plotting options, the ism_data structure, returned by razr, is required):
 %   ism_data        (empty struct) ism_data-structure as being returned by razr
 %   plot_ispos      (false) If true, plot image source positions, stored in ism_data
@@ -57,7 +57,7 @@ function h = scene(rooms, varargin)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -133,10 +133,10 @@ end
 labeloffset = [1 1 1].*(p.Results.labeloffset);
 
 if iscell(adj)
-    adj = adj2idx({rooms.name}, adj);
+    adjx = adj2adjx(rooms, adj);
 end
 
-h.origins = get_room_origins(rooms, adj);
+rooms = add_room_origins(rooms, adjx);
 
 %%
 
@@ -151,40 +151,39 @@ leg_str = cell(0);
 for r = 1:numRooms;
     % abbvrevs:
     room = rooms(r);
-    origin = h.origins(r, :);
     b = room.boxsize;
     
     %% rooms:
     h.plot.room(:, r) = plotbox(...
-        h.ax, b, origin, 'linewidth', 3, 'color', p.Results.roomcolors(r, :));
+        h.ax, b, room.origin, 'linewidth', 3, 'color', p.Results.roomcolors(r, :));
     
     hold on
     
     %% doors:
     if isfield(room, 'door')
-        [rows, cols] = find(adj.rooms == r);
+        [rows, cols] = find(adjx.rooms == r);
         numA = length(rows);
         doors_of_cur_room = zeros(numA, 1);
         states_of_cur_room = zeros(numA, 1);
         for a = 1:numA
-            doors_of_cur_room(a) = adj.doors(rows(a), cols(a));
-            states_of_cur_room(a) = adj.states(rows(a));
+            doors_of_cur_room(a) = adjx.doors(rows(a), cols(a));
+            states_of_cur_room(a) = adjx.states(rows(a));
         end
         
         [wall_idx_abs, other_idxs] = idx_door_wall(room);
         
-        for d = 1:size(room.door, 1)
+        for d = 1:length(room.door)
             doorbox(wall_idx_abs(d)) = 0;   % thickness of door
-            doorbox(other_idxs(d, :)) = room.door(d, [4, 5]);
+            doorbox(other_idxs(d, :)) = room.door(d).size;
             door_origin(wall_idx_abs(d)) = ...
-                b(wall_idx_abs(d)) * (sign(room.door(d, 1)) == 1) - sign(room.door(d, 1))*0.01;
-            door_origin(other_idxs(d, :)) = room.door(d, [2, 3]);
+                b(wall_idx_abs(d)) * (sign(room.door(d).wall) == 1) - sign(room.door(d).wall)*0.01;
+            door_origin(other_idxs(d, :)) = room.door(d).pos;
             
             if p.Results.xl_doors
                 doorbox(3) = room.boxsize(3) + 1;
             end
             % increased linewidth to be visible in top view, too:
-            h.plot.door(:, d) = plotbox(h.ax, doorbox, door_origin + origin, ...
+            h.plot.door(:, d) = plotbox(h.ax, doorbox, door_origin + room.origin, ...
                 'linewidth', 5.0, 'color', p.Results.doorcolors(r, :));
             
             % door state (temporally disabled, not important at the moment):
@@ -198,7 +197,7 @@ for r = 1:numRooms;
     %% source(s):
     if isfield(room, 'srcpos') && ~isempty(room.srcpos)
         numSrc = size(room.srcpos, 1);
-        srcpos = room.srcpos + repmat(origin, numSrc, 1);
+        srcpos = room.srcpos + repmat(room.origin, numSrc, 1);
         srclabel = get_labels(p.Results.srclabel, numSrc, 'Src');
         
         if size(p.Results.srccolor, 1) == 1
@@ -239,7 +238,7 @@ for r = 1:numRooms;
         end
         
         for n = 1:numRec
-            recpos = room.recpos(n, :) + origin;
+            recpos = room.recpos(n, :) + room.origin;
             h.plot.rec(n) = plot3(recpos(1), recpos(2), recpos(3), 'o', ...
                 'Linewidth', 2, 'markersize', 8, ...
                 'color', reccol(n, :), 'markerfacecolor', reccol(n, :));
@@ -281,7 +280,7 @@ for r = 1:numRooms;
         mpos(4,:) = mpos(3,:) + [1 0 0].*b;     % +x
         mpos(5,:) = mpos(2,:) + [0 1 0].*b;     % +y
         mpos(6,:) = mpos(1,:) + [0 0 1].*b;     % +z
-        mpos = mpos + repmat(origin, 6, 1);
+        mpos = mpos + repmat(room.origin, 6, 1);
         
         h.text = text(mpos(:, 1), mpos(:, 2), mpos(:, 3), room.materials, ...
             'HorizontalAlignment', 'center', 'Interpreter', 'none');
@@ -294,7 +293,7 @@ for r = 1:numRooms;
             error('ism_data must be passed to scene if ISM positions shall be plotted.');
         end
         
-        h = plot_ism(h, room, origin, p);
+        h = plot_ism(h, room, p);
         
         if isfield(h.plot, 'img_src') && ~isempty(h.plot.img_src)
             for is = 1:length(h.plot.img_src)
@@ -371,7 +370,7 @@ end
 
 end
 
-function h = plot_ism(h, room, origin, p)
+function h = plot_ism(h, room, p)
 
 if isempty(p.Results.ism_order)
     desired_orders = unique(p.Results.ism_data.order);
@@ -395,8 +394,8 @@ end
 
 numSrc = size(p.Results.ism_data.positions, 1);
 
-pos     = p.Results.ism_data.positions(:, 1:3) + repmat(origin, numSrc, 1);
-pos_jit = p.Results.ism_data.relpos(:, 1:3) + repmat(origin, numSrc, 1) + repmat(room.recpos, numSrc, 1);
+pos     = p.Results.ism_data.positions(:, 1:3) + repmat(room.origin, numSrc, 1);
+pos_jit = p.Results.ism_data.relpos(:, 1:3) + repmat(room.origin, numSrc, 1) + repmat(room.recpos, numSrc, 1);
 idx_a = p.Results.ism_data.idx_auralize;
 
 

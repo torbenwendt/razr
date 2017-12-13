@@ -16,7 +16,7 @@ function [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -38,9 +38,9 @@ function [b, a, h] = getAbsfiltCoeff(room, fdn_setup, op)
 if nargin == 0
     room.boxsize  = [5, 4, 3];
     room.materials = {...
-        'hall.concrete_block_painted', 'hall.draperies', ...
-        'hall.carpet_on_conc', 'hall.windowglass', ...
-        'hall.concrete_block_painted', 'hall.tile'};
+        'hall:concrete_block_painted', 'hall:draperies', ...
+        'hall:carpet_on_conc', 'hall:windowglass', ...
+        'hall:concrete_block_painted', 'hall:tile'};
     
     room.freq = octf(250, 4e3);
     room.abscoeff = material2abscoeff(room.materials, room.freq);

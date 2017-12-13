@@ -4,7 +4,7 @@ RAZR SOFTWARE PACKAGE FOR MATHWORK'S MATLAB
 
 RAZR - Room acoustics simulator
 
-Version 0.92
+Version 0.93
 
 Copyright (c) 2014-2017, Torben Wendt, Steven van de Par, Stephan Ewert,
 University of Oldenburg, Germany.
@@ -118,13 +118,18 @@ Demo and Example scripts
 ------------------------
 To start the demo, type "razr demo".
 
-Besides, in the directory "EXAMPLES", you can find some example scripts, which 
+Besides, in the directory "EXAMPLES", you can find some example scripts, that 
 demonstrate the usage of this program package. See the respective files for
-details.
-To start any of the examples, type "razr addpath" to temporally add all
-required folders to MATLAB's path. Then type, e.g. "example_default" or
-"example_options". When you have read and tried out all examples, you know the
-most important features of RAZR.
+details. When you have read and tried out all examples, you know the most
+important features of RAZR.
+To start any of the examples, type "razr addpath" to temporally add all required
+folders to MATLAB's path. Then type, e.g., "example_default" or
+"example_options". 
+
+A formal usage description is provided in the documentation of the top-level
+function razr(). Type "razr help" to display it.
+
+Please see also the changelog if you have already used earlier versions of RAZR.
 
 
 Data structures
@@ -147,7 +152,8 @@ convenient way to store rooms as they can easily be loaded by filename.
 
 (2) Options for the BRIR synthesis are defined in a structure, called "op" in
 most scripts and functions. All possible fields and their default values are
-stored in BASE/GET_DEFAULT_OPTIONS.M.
+stored in BASE/GET_DEFAULT_OPTIONS.M. To display options, check out also the
+function "sop".
 Some of them are experimental, refer to features in development (and thus not
 contained in the current version), or might read unclear. In doubt, stick to
 the default or contact the author. See EXAMPLES/EXAMPLE_OPTIONS.M to see how
@@ -174,8 +180,8 @@ Configuration structures are defined in RAZR_CFG_DEFAULT.M and RAZR_CFG_USER.M.
 (The latter one is automatically created when you run razr for the first time.)
 Internally, RAZR_CFG_USER overloads RAZR_CFG_DEFAULT. You can also create and
 store several configuration files in parallel. In the file SELECT_RAZR_CFG.M,
-you can specify what configuration is actually used. RAZR_CFG_USER is the
-pre-defined one.
+you can specify what configuration is actually used to override
+RAZR_CFG_DEFAULT. RAZR_CFG_USER is the predefined one.
 
 
 ===============================================================================
@@ -284,7 +290,7 @@ I'd like to thank all the people who tested earlier versions of the Software,
 contributed to it, reported on bugs, or made suggestions for improvements:
 Thomas Biberger, Oliver Buttler, Stephan D. Ewert, Jan-Hendrik Flessner, Nico
 Goessling, Julian Grosse, Andreas Haeussler, Stefan Klockgether, Steven van de
-Par, Josef Poppitz, Joachim Thiemann.
+Par, Josef Poppitz, Joachim Thiemann. (Sorry if I forgot someone here.)
 
 All files in the directory ./BASE/EXTERNAL and all subdirectories are written
 by other authors. Please see the file headers or license.txt files further

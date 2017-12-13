@@ -11,7 +11,7 @@ function check_door(room)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -29,10 +29,13 @@ function check_door(room)
 
 
 if isfield(room, 'door')
-	
 	[idx_door, idx_rest] = idx_door_wall(room);
 	
-	if sum([room.door(2)+room.door(4), room.door(3)+room.door(5)] > room.boxsize(idx_rest)) || sum(room.door([2 3]) < 0)
+    vertices = [...
+        room.door.pos(1) + room.door.size(1), ...
+        room.door.pos(2) + room.door.size(2)];
+    
+	if any(vertices > room.boxsize(idx_rest)) || any(room.door.pos < 0)
 		error('Door is not or not completely within the room');
 	end
 	

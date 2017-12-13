@@ -17,7 +17,7 @@ function [pos, cntr] = doorpos(room)
 %------------------------------------------------------------------------------
 % RAZR engine for Mathwork's MATLAB
 %
-% Version 0.92
+% Version 0.93
 %
 % Author(s): Torben Wendt
 %
@@ -40,17 +40,17 @@ function [pos, cntr] = doorpos(room)
 
 [idx_wall, idx_rest] = idx_door_wall(room);
 
-numDoors = size(room.door, 1);
+numDoors = length(room.door);
 
 pos = zeros(numDoors, 3, 2);
 
 for d = 1:numDoors
-    if sign(room.door(d, 1)) == 1
+    if sign(room.door(d).wall) == 1
         pos(d, idx_wall(d), :) = [1, 1]*room.boxsize(idx_wall(d));
     end
     
     pos(d, idx_rest(d, :), :) = ...
-        [room.door(d, [2, 3])', (room.door(d, [2, 3]) + room.door(d, [4, 5]))'];
+        [room.door(d).pos', (room.door(d).pos + room.door(d).size)'];
 end
 
 cntr = mean(pos, 3);
